@@ -1,13 +1,12 @@
-import ToolbarPresenter from './presenter/toolbar-presenter.js';
-import ContentPresenter from './presenter/content-presenter.js';
+import HeaderPresenter from './presenter/header-presenter.js';
+import MainPresenter from './presenter/main-presenter.js';
 
-const infoContainer = document.querySelector('.trip-main');
+const toolbarContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
 const contentContainer = document.querySelector('.trip-events');
 
-const toolbarPresenter = new ToolbarPresenter({filterContainer, contentContainer});
+const headerPresenter = new HeaderPresenter({filterContainer, toolbarContainer});
+const mainPresenter = new MainPresenter({contentContainer});
 
-const contentPresenter = new ContentPresenter({infoContainer, contentContainer});
-
-toolbarPresenter.init();
-contentPresenter.init();
+headerPresenter.init();
+mainPresenter.init();

@@ -1,12 +1,12 @@
 import {createElement} from '../../render';
 
-function createEventsTemplate() {
+function createListTemplate() {
   return '<ul class="trip-events__list"></ul>';
 }
 
-export default class EventsView {
+export default class ListView {
   getTemplate() {
-    return createEventsTemplate();
+    return createListTemplate();
   }
 
   getElement() {
@@ -14,9 +14,5 @@ export default class EventsView {
       this.element = createElement(this.getTemplate());
     }
     return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
