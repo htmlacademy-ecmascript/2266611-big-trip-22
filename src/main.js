@@ -5,7 +5,7 @@ const toolbarContainer = document.querySelector('.trip-main');
 const filterContainer = document.querySelector('.trip-controls__filters');
 const contentContainer = document.querySelector('.trip-events');
 
-const headerPresenter = new HeaderPresenter({filterContainer, toolbarContainer});
+const headerPresenter = new HeaderPresenter({toolbarContainer, filterContainer});
 const mainPresenter = new MainPresenter({contentContainer});
 
 headerPresenter.init();
