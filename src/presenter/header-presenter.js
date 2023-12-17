@@ -1,21 +1,19 @@
 import {RenderPosition, render} from '../render.js';
-import RouteView from '../view/content/route-view.js';
+import HeadlineView from '../view/content/headline-view.js';
 import FilterView from '../view/toolbar/filter-view.js';
 import ButtonView from '../view/toolbar/button-view.js';
 
+const toolbarContainer = document.querySelector('.trip-main');
+const filterContainer = document.querySelector('.trip-controls__filters');
+
 export default class HeaderPresenter {
+  headlineComponent = new HeadlineView();
   filterComponent = new FilterView();
-  routeComponent = new RouteView();
   buttonComponent = new ButtonView();
 
-  constructor({toolbarContainer, filterContainer}) {
-    this.toolbarContainer = toolbarContainer;
-    this.filterContainer = filterContainer;
-  }
-
   init() {
-    render(this.routeComponent, this.toolbarContainer, RenderPosition.AFTERBEGIN);
-    render(this.filterComponent, this.filterContainer);
-    render(this.buttonComponent, this.toolbarContainer);
+    render(this.headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
+    render(this.filterComponent, filterContainer);
+    render(this.buttonComponent, toolbarContainer);
   }
 }

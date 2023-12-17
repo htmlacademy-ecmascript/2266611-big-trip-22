@@ -1,12 +1,13 @@
+import PointModel from './model/point-model.js';
 import HeaderPresenter from './presenter/header-presenter.js';
 import MainPresenter from './presenter/main-presenter.js';
 
-const toolbarContainer = document.querySelector('.trip-main');
-const filterContainer = document.querySelector('.trip-controls__filters');
-const contentContainer = document.querySelector('.trip-events');
+const pointModel = new PointModel();
 
-const headerPresenter = new HeaderPresenter({toolbarContainer, filterContainer});
-const mainPresenter = new MainPresenter({contentContainer});
+pointModel.init();
+
+const headerPresenter = new HeaderPresenter();
+const mainPresenter = new MainPresenter({pointModel});
 
 headerPresenter.init();
 mainPresenter.init();

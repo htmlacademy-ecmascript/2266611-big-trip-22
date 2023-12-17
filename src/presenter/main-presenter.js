@@ -1,28 +1,33 @@
 import {render} from '../render.js';
+import {getDefaultPoint} from '../utils/const.js';
+
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import PointView from '../view/content/point-view.js';
 import PointEditorView from '../view/content/point-editor-view.js';
 
-const POINTS_COUNT = 3;
+const contentContainer = document.querySelector('.trip-events');
 
 export default class MainPresenter {
   sortComponent = new SortView();
   listComponent = new ListView();
-  pointComponent = new PointView();
-  pointEditorComponent = new PointEditorView();
 
-  constructor({contentContainer}) {
-    this.contentContainer = contentContainer;
+  constructor({pointModel}) {
+    this.pointModel = pointModel;
   }
 
   init() {
-    render(this.sortComponent, this.contentContainer);
-    render(this.listComponent, this.contentContainer);
-    render(this.pointEditorComponent, this.listComponent.getElement());
+    const points = this.pointModel.getPoints();
+    const destinations = this.pointModel.gerDestinations();
+    const offers = this.pointModel.getOffers();
 
-    for (let i = 0; i < POINTS_COUNT; i++) {
-      render(this.pointComponent, this.listComponent.getElement());
+    render(this.sortComponent, contentContainer);
+    render(this.listComponent, contentContainer);
+    render(new PointEditorView(getDefaultPoint(), destinations, offers), this.listComponent.getElement());
+    render(new PointEditorView(points[4], destinations, offers), this.listComponent.getElement());
+
+    for (const point of points) {
+      render(new PointView(point, destinations, offers), this.listComponent.getElement());
     }
   }
 }
