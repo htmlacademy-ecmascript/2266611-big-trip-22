@@ -58,6 +58,17 @@ const createDestinationDescriptionTemplate = (description, pictures) => {
           </section>`;
 };
 
+const createDetailsTemplate = (pointId, defaultOffers, selectedOffers, description, pictures) => {
+  if (defaultOffers.length === 0 && !description) {
+    return '';
+  }
+
+  return `<section class="event__details">
+            ${createAvailableOffersTemplate(pointId, defaultOffers, selectedOffers)}
+            ${createDestinationDescriptionTemplate(description, pictures)}
+          </section>`;
+};
+
 const createPointEditorTemplate = (point, destinations, offers) => {
   const pointDestination = destinations.find((item) => item.id === point.destination);
   const defaultOffers = offers.find((offer) => offer.type === point.type).offers;
@@ -128,14 +139,9 @@ const createPointEditorTemplate = (point, destinations, offers) => {
                   </button>
                 </header>
 
-                <section class="event__details">
-                  <!-- Дополнительные опции -->
-                  ${createAvailableOffersTemplate(pointId, defaultOffers, selectedOffers)}
+                <!-- Дополнительные опции и описание пункта назначения -->
+                ${createDetailsTemplate(pointId, defaultOffers, selectedOffers, description, pictures)}
 
-                  <!-- Описание пункта назначения -->
-                  ${createDestinationDescriptionTemplate(description, pictures)}
-
-                </section>
               </form>
             </li>`;
 };
