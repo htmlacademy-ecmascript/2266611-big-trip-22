@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
 
@@ -146,14 +146,19 @@ const createPointEditorTemplate = (point, destinations, offers) => {
             </li>`;
 };
 
-export default class PointEditorView {
+export default class PointEditorView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
+
   constructor(point, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getElement() {
-    return createElement(createPointEditorTemplate(this.point, this.destinations, this.offers));
+  get template() {
+    return createPointEditorTemplate(this.#point, this.#destinations, this.#offers);
   }
 }

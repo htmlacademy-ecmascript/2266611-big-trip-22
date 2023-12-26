@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 
 function createHeadlineTemplate() {
   return `<section class="trip-main__trip-info  trip-info">
@@ -12,8 +12,8 @@ function createHeadlineTemplate() {
           </section>`;
 }
 
-export default class HeadlineView {
-  getElement() {
-    return createElement(createHeadlineTemplate());
+export default class HeadlineView extends AbstractView {
+  get template() {
+    return createHeadlineTemplate();
   }
 }
