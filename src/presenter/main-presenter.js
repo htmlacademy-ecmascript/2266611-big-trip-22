@@ -28,8 +28,10 @@ export default class MainPresenter {
     render(new PointEditorView(getDefaultPoint(), destinations, offers), this.#listComponent.element);
     render(new PointEditorView(points[4], destinations, offers), this.#listComponent.element);
 
-    for (const point of points) {
-      render(new PointView(point, destinations, offers), this.#listComponent.element);
-    }
+    points.forEach((point) => this.#renderPoint(point, destinations, offers));
+  }
+
+  #renderPoint(point, destinations, offers) {
+    render(new PointView(point, destinations, offers), this.#listComponent.element);
   }
 }
