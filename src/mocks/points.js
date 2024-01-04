@@ -15,8 +15,8 @@ export const points = [
   {
     id: 2,
     basePrice: 20,
-    dateFrom: '2023-07-04T19:30:56.845Z',
-    dateTo: '2023-07-04T20:22:13.845Z',
+    dateFrom: '2024-01-07T19:30:56.845Z',
+    dateTo: '2024-01-08T20:22:13.845Z',
     destination: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
     isFavorite: true,
     offers: [
