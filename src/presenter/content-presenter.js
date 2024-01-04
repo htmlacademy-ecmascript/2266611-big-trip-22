@@ -7,7 +7,7 @@ import PointEditorView from '../view/content/point-editor-view.js';
 
 const contentContainer = document.querySelector('.trip-events');
 
-export default class MainPresenter {
+export default class ContentPresenter {
   #pointModel = null;
 
   #sortComponent = new SortView();
@@ -22,6 +22,10 @@ export default class MainPresenter {
     const destinations = this.#pointModel.destinations;
     const offers = this.#pointModel.offers;
 
+    this.#renderContent(points, destinations, offers);
+  }
+
+  #renderContent(points, destinations, offers) {
     render(this.#sortComponent, contentContainer);
     render(this.#listComponent, contentContainer);
 

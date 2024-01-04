@@ -12,6 +12,12 @@ const DateFormat = {
   M_DURATION: 'mm[M]'
 };
 
+const isDateFuture = (start) => dayjs().isBefore(start);
+
+const isDatePresent = (start, end) => dayjs().isAfter(start) && dayjs().isBefore(end);
+
+const isDatePast = (end) => dayjs().isAfter(end);
+
 const convertDate = (date, format) => date ? dayjs(date).format(format) : '';
 
 const calculateDuration = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(start)));
@@ -28,4 +34,4 @@ const convertDuration = (value) => {
   return value.format(DateFormat.M_DURATION);
 };
 
-export {DateFormat, convertDate, calculateDuration, convertDuration};
+export {isDateFuture, isDatePresent, isDatePast, DateFormat, convertDate, calculateDuration, convertDuration};
