@@ -4,7 +4,7 @@ import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import PointView from '../view/content/point-view.js';
 import PointEditorView from '../view/content/point-editor-view.js';
-import EmptyPageView from '../view/stubs/empty-page-view.js';
+import StubView from '../view/stubs/stub-view.js';
 
 const contentContainer = document.querySelector('.trip-events');
 
@@ -31,7 +31,7 @@ export default class ContentPresenter {
     render(this.#listComponent, contentContainer);
 
     if (points.length === 0) {
-      render(new EmptyPageView(), contentContainer);
+      render(new StubView(), contentContainer);
     }
 
     points.forEach((point) => this.#renderPoint(point, destinations, offers));
