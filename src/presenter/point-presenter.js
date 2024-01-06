@@ -1,4 +1,4 @@
-import {render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 
 import PointView from '../view/content/point-view.js';
 import PointEditorView from '../view/content/point-editor-view.js';
@@ -13,6 +13,9 @@ export default class PointPresenter {
   }
 
   init(point, destinations, offers) {
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditorComponent = this.#pointEditorComponent;
+
     this.#pointComponent = new PointView({
       point,
       destinations,
@@ -28,7 +31,26 @@ export default class PointPresenter {
       onFormSubmit: this.#handleFormSubmit
     });
 
-    render(this.#pointComponent, this.#listComponent);
+    if (prevPointComponent === null || prevPointEditorComponent === null) {
+      render(this.#pointComponent, this.#listComponent);
+      return;
+    }
+
+    if (this.#listComponent.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#listComponent.contains(prevPointEditorComponent.element)) {
+      replace(this.#pointEditorComponent, prevPointEditorComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditorComponent);
+  }
+
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditorComponent);
   }
 
   #replacePointToForm = () => {
@@ -60,4 +82,3 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 }
-
