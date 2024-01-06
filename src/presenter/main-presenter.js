@@ -27,27 +27,25 @@ export default class MainPresenter {
     this.#renderContent(points, destinations, offers);
   }
 
-  #renderWithoutContent(points) {
+  #renderWithoutContent = (points) => {
     if (points.length === 0) {
       render(this.#stubComponent, contentContainer);
     }
-  }
+  };
 
-  #renderContent(points, destinations, offers) {
+  #renderContent = (points, destinations, offers) => {
     render(this.#sortComponent, contentContainer);
     render(this.#listComponent, contentContainer);
     this.#renderPoints(points, destinations, offers);
-  }
+  };
 
-  #renderPoints(points, destinations, offers) {
+  #renderPoints = (points, destinations, offers) => {
     points.forEach((point) => this.#renderPoint(point, destinations, offers));
-  }
+  };
 
-  #renderPoint(point, destinations, offers) {
-    const pointPresenter = new PointPresenter({
-      listComponent: this.#listComponent.element,
-    });
-
+  #renderPoint = (point, destinations, offers) => {
+    const listComponent = this.#listComponent.element;
+    const pointPresenter = new PointPresenter({listComponent});
     pointPresenter.init(point, destinations, offers);
-  }
+  };
 }

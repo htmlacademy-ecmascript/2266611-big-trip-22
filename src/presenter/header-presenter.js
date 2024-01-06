@@ -24,9 +24,9 @@ export default class HeaderPresenter {
     this.#renderHeader(filters);
   }
 
-  #renderHeader(filters) {
+  #renderHeader = (filters) => {
     render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView({filters}), filterContainer);
     render(this.#buttonComponent, toolbarContainer);
-  }
+  };
 }
