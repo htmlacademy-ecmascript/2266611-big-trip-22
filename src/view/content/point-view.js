@@ -16,7 +16,7 @@ const createSelectedOffersTemplate = (selectedOffers) => {
   </ul>`;
 };
 
-const createPointTemplate = (point, destinations, offers) => {
+const createPointTemplate = (point, offers, destinations) => {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = point;
 
   const defaultOffers = offers.find((offer) => offer.type === point.type).offers;
@@ -76,27 +76,37 @@ const createPointTemplate = (point, destinations, offers) => {
 };
 
 export default class PointView extends AbstractView {
-  #point = null;
-  #destinations = null;
-  #offers = null;
-  #handleEditClick = null;
+  #point = [];
+  #offers = [];
+  #destinations = [];
 
-  constructor({point, destinations, offers, onEditClick}) {
+  #handleEditClick = null;
+  #handleFavoriteClick = null;
+
+  constructor({point, offers, destinations, onEditClick, onFavoriteClick}) {
     super();
     this.#point = point;
-    this.#destinations = destinations;
     this.#offers = offers;
+    this.#destinations = destinations;
+
     this.#handleEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createPointTemplate(this.#point, this.#destinations, this.#offers);
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

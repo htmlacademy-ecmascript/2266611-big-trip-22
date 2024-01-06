@@ -1,4 +1,5 @@
 import {render} from '../framework/render.js';
+import {updateItem} from '../utils/utils.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
@@ -10,21 +11,27 @@ const contentContainer = document.querySelector('.trip-events');
 export default class MainPresenter {
   #pointModel = null;
 
+  #pointPresenters = new Map();
+
   #sortComponent = new SortView();
   #listComponent = new ListView();
   #stubComponent = new StubView();
+
+  #points = [];
+  #offers = [];
+  #destinations = [];
 
   constructor({pointModel}) {
     this.#pointModel = pointModel;
   }
 
   init() {
-    const points = this.#pointModel.points;
-    const destinations = this.#pointModel.destinations;
-    const offers = this.#pointModel.offers;
+    this.#points = this.#pointModel.points;
+    this.#offers = this.#pointModel.offers;
+    this.#destinations = this.#pointModel.destinations;
 
-    this.#renderWithoutContent(points);
-    this.#renderContent(points, destinations, offers);
+    this.#renderWithoutContent(this.#points);
+    this.#renderContent(this.#points, this.#offers, this.#destinations);
   }
 
   #renderWithoutContent = (points) => {
@@ -33,19 +40,28 @@ export default class MainPresenter {
     }
   };
 
-  #renderContent = (points, destinations, offers) => {
+  #renderContent = (points, offers, destinations) => {
     render(this.#sortComponent, contentContainer);
     render(this.#listComponent, contentContainer);
-    this.#renderPoints(points, destinations, offers);
+    this.#renderPoints(points, offers, destinations);
   };
 
-  #renderPoints = (points, destinations, offers) => {
-    points.forEach((point) => this.#renderPoint(point, destinations, offers));
+  #renderPoints = (points, offers, destinations) => {
+    points.forEach((point) => this.#renderPoint(point, offers, destinations));
   };
 
-  #renderPoint = (point, destinations, offers) => {
+  #renderPoint = (point, offers, destinations) => {
     const listComponent = this.#listComponent.element;
-    const pointPresenter = new PointPresenter({listComponent});
-    pointPresenter.init(point, destinations, offers);
+    const onDataChange = this.#handlePointChange;
+
+    const pointPresenter = new PointPresenter({listComponent, onDataChange});
+
+    pointPresenter.init(point, offers, destinations);
+    this.#pointPresenters.set(point.id, pointPresenter);
+  };
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, this.#offers, this.#destinations);
   };
 }
