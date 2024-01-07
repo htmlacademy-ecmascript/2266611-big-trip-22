@@ -1,6 +1,7 @@
-import AbstractView from '../../framework/view/abstract-view.js';
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createPointTypeGroupTemplate = (pointId, type) => {
   const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;

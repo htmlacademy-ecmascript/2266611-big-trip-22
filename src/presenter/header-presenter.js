@@ -1,5 +1,6 @@
 import {RenderPosition, render} from '../framework/render.js';
 import {generateFilter} from '../mocks/filter.js';
+
 import HeadlineView from '../view/content/headline-view.js';
 import FilterView from '../view/toolbar/filter-view.js';
 import ButtonView from '../view/toolbar/button-view.js';

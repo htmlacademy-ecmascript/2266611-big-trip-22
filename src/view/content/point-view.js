@@ -1,5 +1,6 @@
-import AbstractView from '../../framework/view/abstract-view.js';
 import {DateFormat, convertDate, calculateDuration, convertDuration} from '../../utils/date.js';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createSelectedOffersTemplate = (selectedOffers) => {
   if (selectedOffers.length === 0) {

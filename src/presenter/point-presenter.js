@@ -1,4 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
+import {Mode} from '../utils/const.js';
 
 import PointView from '../view/content/point-view.js';
 import PointEditorView from '../view/content/point-editor-view.js';
@@ -13,10 +14,14 @@ export default class PointPresenter {
   #destinations = [];
 
   #handleDataChange = null;
+  #handleModeChange = null;
 
-  constructor({listComponent, onDataChange}) {
+  #mode = Mode.DEFAULT;
+
+  constructor({listComponent, onDataChange, onModeChange}) {
     this.#listComponent = listComponent;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(point, offers, destinations) {
@@ -48,11 +53,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#listComponent.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#listComponent.contains(prevPointEditorComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditorComponent, prevPointEditorComponent);
     }
 
@@ -65,14 +70,23 @@ export default class PointPresenter {
     remove(this.#pointEditorComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
+  }
+
   #replacePointToForm = () => {
     replace(this.#pointEditorComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#pointEditorComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   #escKeyDownHandler = (evt) => {
@@ -90,7 +104,8 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(point);
     this.#replaceFormToPoint();
   };
 

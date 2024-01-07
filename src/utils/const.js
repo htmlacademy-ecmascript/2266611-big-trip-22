@@ -36,4 +36,9 @@ const FilterMessage = {
   [FilterType.PAST]: 'There are no past events now'
 };
 
-export {POINT_TYPES, getDefaultPoint, FilterType, FilterMessage};
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export {POINT_TYPES, getDefaultPoint, FilterType, FilterMessage, Mode};
