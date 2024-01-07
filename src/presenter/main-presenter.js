@@ -1,5 +1,6 @@
 import {render} from '../framework/render.js';
 import {updateItem} from '../utils/utils.js';
+import {SortType} from '../utils/const.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
@@ -13,13 +14,15 @@ export default class MainPresenter {
 
   #pointPresenters = new Map();
 
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #listComponent = new ListView();
   #stubComponent = new StubView();
 
   #points = [];
   #offers = [];
   #destinations = [];
+
+  #currentSortType = SortType.DAY;
 
   constructor({pointModel}) {
     this.#pointModel = pointModel;
@@ -41,9 +44,18 @@ export default class MainPresenter {
   };
 
   #renderContent = (points, offers, destinations) => {
-    render(this.#sortComponent, contentContainer);
+    this.#renderSort();
     render(this.#listComponent, contentContainer);
     this.#renderPoints(points, offers, destinations);
+  };
+
+  #renderSort = () => {
+    this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
+    render(this.#sortComponent, contentContainer);
   };
 
   #renderPoints = (points, offers, destinations) => {
@@ -68,5 +80,11 @@ export default class MainPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleSortTypeChange = () => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
   };
 }
