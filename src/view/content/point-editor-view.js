@@ -1,6 +1,7 @@
-import AbstractView from '../../framework/view/abstract-view.js';
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createPointTypeGroupTemplate = (pointId, type) => {
   const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
@@ -69,10 +70,10 @@ const createDetailsTemplate = (pointId, defaultOffers, selectedOffers, descripti
           </section>`;
 };
 
-const createPointEditorTemplate = (point, destinations, offers) => {
-  const pointDestination = destinations.find((item) => item.id === point.destination);
+const createPointEditorTemplate = (point, offers, destinations) => {
   const defaultOffers = offers.find((offer) => offer.type === point.type).offers;
   const selectedOffers = defaultOffers.filter((defaultOffer) => point.offers.includes(defaultOffer.id));
+  const pointDestination = destinations.find((item) => item.id === point.destination);
 
   const {basePrice, dateFrom, dateTo, type} = point;
   const {description, name, pictures} = pointDestination || {};
@@ -147,17 +148,19 @@ const createPointEditorTemplate = (point, destinations, offers) => {
 };
 
 export default class PointEditorView extends AbstractView {
-  #point = null;
-  #destinations = null;
-  #offers = null;
+  #point = [];
+  #offers = [];
+  #destinations = [];
+
   #handleFormSubmit = null;
   #handleEditClick = null;
 
-  constructor({point, destinations, offers, onFormSubmit, onEditClick}) {
+  constructor({point, offers, destinations, onEditClick, onFormSubmit}) {
     super();
     this.#point = point;
-    this.#destinations = destinations;
     this.#offers = offers;
+    this.#destinations = destinations;
+
     this.#handleEditClick = onEditClick;
     this.#handleFormSubmit = onFormSubmit;
 
@@ -166,7 +169,7 @@ export default class PointEditorView extends AbstractView {
   }
 
   get template() {
-    return createPointEditorTemplate(this.#point, this.#destinations, this.#offers);
+    return createPointEditorTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {
@@ -176,6 +179,6 @@ export default class PointEditorView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#point);
   };
 }

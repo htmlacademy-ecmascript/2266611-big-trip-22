@@ -1,5 +1,6 @@
 import {RenderPosition, render} from '../framework/render.js';
 import {generateFilter} from '../mocks/filter.js';
+
 import HeadlineView from '../view/content/headline-view.js';
 import FilterView from '../view/toolbar/filter-view.js';
 import ButtonView from '../view/toolbar/button-view.js';
@@ -13,20 +14,23 @@ export default class HeaderPresenter {
   #headlineComponent = new HeadlineView();
   #buttonComponent = new ButtonView();
 
+  #points = [];
+  #filters;
+
   constructor({pointModel}) {
     this.#pointModel = pointModel;
   }
 
   init() {
-    const points = this.#pointModel.points;
-    const filters = generateFilter(points);
+    this.#points = this.#pointModel.points;
+    this.#filters = generateFilter(this.#points);
 
-    this.#renderHeader(filters);
+    this.#renderHeader(this.#filters);
   }
 
-  #renderHeader(filters) {
+  #renderHeader = (filters) => {
     render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView({filters}), filterContainer);
     render(this.#buttonComponent, toolbarContainer);
-  }
+  };
 }
