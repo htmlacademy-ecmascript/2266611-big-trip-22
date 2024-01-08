@@ -76,13 +76,13 @@ export default class MainPresenter {
 
   #sortPoints = (sortType) => {
     switch (sortType) {
-      case SortType.DAY.name:
+      case 'day':
         this.#points.sort(sortByDate);
         break;
-      case SortType.TIME.name:
+      case 'time':
         this.#points.sort(sortByDuration);
         break;
-      case SortType.PRICE.name:
+      case 'price':
         this.#points.sort(sortByValue('basePrice'));
         break;
       default: this.#points.sort(sortByDate);
