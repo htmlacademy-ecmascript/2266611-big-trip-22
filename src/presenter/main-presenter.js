@@ -23,7 +23,7 @@ export default class MainPresenter {
   #offers = [];
   #destinations = [];
 
-  #defaultSortType = SortType.DAY;
+  #defaultSortType = SortType.DAY.name;
   #currentSortType = this.#defaultSortType;
 
   constructor({pointModel}) {
@@ -69,7 +69,7 @@ export default class MainPresenter {
   };
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType.name === sortType) {
+    if (this.#currentSortType === sortType) {
       return;
     }
 
