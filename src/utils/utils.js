@@ -4,4 +4,6 @@ const updateItem = (items, update) => (items.map((item) => item.id === update.id
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 
-export {getRandomInteger, updateItem, upFirstLetter};
+const sortByValue = (value) => (a, b) => b[value] - a[value];
+
+export {getRandomInteger, updateItem, upFirstLetter, sortByValue};
