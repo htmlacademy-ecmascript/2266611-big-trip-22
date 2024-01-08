@@ -1,18 +1,17 @@
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
+import {upFirstLetter} from '../../utils/utils.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
-const createPointTypeGroupTemplate = (pointId, type) => {
-  const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
-
-  return `${POINT_TYPES.map((pointType) => (
+const createPointTypeGroupTemplate = (pointId, type) => (/*html*/`
+  ${POINT_TYPES.map((pointType) => (
     `<div class="event__type-item">
         <input id="event-type-${pointType}-${pointId}" class="event__type-input  visually-hidden" type="radio"
         name="event-type" value="${pointType}" ${pointType === type ? 'checked' : ''}>
         <label class="event__type-label event__type-label--${pointType}" for="event-type-${pointType}-${pointId}">${upFirstLetter(pointType)}</label>
-    </div>`)).join('')}`;
-};
+    </div>`)).join('')}`
+);
 
 const createPointDestinationsTemplate = (destinations) => destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
 

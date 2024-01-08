@@ -34,4 +34,23 @@ const convertDuration = (value) => {
   return value.format(DateFormat.M_DURATION);
 };
 
-export {isDateFuture, isDatePresent, isDatePast, DateFormat, convertDate, calculateDuration, convertDuration};
+const sortByDate = (a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom));
+
+const sortByDuration = (a, b) => {
+  const firstDuration = calculateDuration(a.dateFrom, a.dateTo);
+  const secondDuration = calculateDuration(b.dateFrom, b.dateTo);
+
+  return secondDuration.asMilliseconds() - firstDuration.asMilliseconds();
+};
+
+export {
+  isDateFuture,
+  isDatePresent,
+  isDatePast,
+  DateFormat,
+  convertDate,
+  calculateDuration,
+  convertDuration,
+  sortByDate,
+  sortByDuration
+};
