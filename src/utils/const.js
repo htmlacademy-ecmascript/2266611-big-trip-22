@@ -22,6 +22,29 @@ const getDefaultPoint = () => ({
   type: DEFAULT_POINT_TYPE
 });
 
+const SortType = {
+  DAY: {
+    name: 'day',
+    disabled: false
+  },
+  EVENT: {
+    name: 'event',
+    disabled: true
+  },
+  TIME: {
+    name: 'time',
+    disabled: false
+  },
+  PRICE: {
+    name: 'price',
+    disabled: false
+  },
+  OFFERS: {
+    name: 'offers',
+    disabled: true
+  }
+};
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -37,8 +60,8 @@ const FilterMessage = {
 };
 
 const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
+  DEFAULT: 'default',
+  EDITING: 'editing',
 };
 
-export {POINT_TYPES, getDefaultPoint, FilterType, FilterMessage, Mode};
+export {POINT_TYPES, getDefaultPoint, SortType, FilterType, FilterMessage, Mode};

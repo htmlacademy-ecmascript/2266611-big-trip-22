@@ -1,5 +1,7 @@
 import {render} from '../framework/render.js';
-import {updateItem} from '../utils/utils.js';
+import {updateItem, sortByValue} from '../utils/utils.js';
+import {SortType} from '../utils/const.js';
+import {sortByDate, sortByDuration} from '../utils/date.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
@@ -13,7 +15,7 @@ export default class MainPresenter {
 
   #pointPresenters = new Map();
 
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #listComponent = new ListView();
   #stubComponent = new StubView();
 
@@ -21,33 +23,88 @@ export default class MainPresenter {
   #offers = [];
   #destinations = [];
 
+  #defaultSortType = SortType.DAY;
+  #currentSortType = this.#defaultSortType;
+
   constructor({pointModel}) {
     this.#pointModel = pointModel;
   }
 
   init() {
-    this.#points = this.#pointModel.points;
-    this.#offers = this.#pointModel.offers;
-    this.#destinations = this.#pointModel.destinations;
+    this.#points = [...this.#pointModel.points];
+    this.#offers = [...this.#pointModel.offers];
+    this.#destinations = [...this.#pointModel.destinations];
 
-    this.#renderWithoutContent(this.#points);
-    this.#renderContent(this.#points, this.#offers, this.#destinations);
+    this.#renderWithoutContent();
+    this.#renderContent();
   }
 
-  #renderWithoutContent = (points) => {
-    if (points.length === 0) {
+  // Контент
+  // -----------------
+
+  #renderWithoutContent = () => {
+    if (this.#points.length === 0) {
       render(this.#stubComponent, contentContainer);
     }
   };
 
-  #renderContent = (points, offers, destinations) => {
-    render(this.#sortComponent, contentContainer);
-    render(this.#listComponent, contentContainer);
-    this.#renderPoints(points, offers, destinations);
+  #renderContent = () => {
+    this.#renderSortTypes();
+
+    this.#renderContainer();
+    this.#sortPoints(this.#defaultSortType);
+    this.#renderPoints();
   };
 
-  #renderPoints = (points, offers, destinations) => {
-    points.forEach((point) => this.#renderPoint(point, offers, destinations));
+  // Сортировка
+  // -----------------
+
+  #renderSortTypes = () => {
+    const currentSortType = this.#currentSortType;
+    const onSortTypeChange = this.#handleSortTypeChange;
+
+    this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
+
+    render(this.#sortComponent, contentContainer);
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    this.#clearPoints();
+    this.#sortPoints(sortType);
+    this.#renderPoints();
+  };
+
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case 'day':
+        this.#points.sort(sortByDate('dateFrom'));
+        break;
+      case 'time':
+        this.#points.sort(sortByDuration('dateFrom', 'dateTo'));
+        break;
+      case 'price':
+        this.#points.sort(sortByValue('basePrice'));
+        break;
+      default: this.#points.sort(sortByDate('dateFrom'));
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #clearPoints = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+  };
+
+  // Точки
+  // -----------------
+
+  #renderContainer = () => {
+    render(this.#listComponent, contentContainer);
+  };
+
+  #renderPoints = () => {
+    this.#points.forEach((point) => this.#renderPoint(point, this.#offers, this.#destinations));
   };
 
   #renderPoint = (point, offers, destinations) => {
