@@ -34,11 +34,11 @@ const convertDuration = (value) => {
   return value.format(DateFormat.M_DURATION);
 };
 
-const sortByDate = (a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom));
+const sortByDate = (start) => (a, b) => dayjs(a[start]).diff(dayjs(b[start]));
 
-const sortByDuration = (a, b) => {
-  const firstDuration = calculateDuration(a.dateFrom, a.dateTo);
-  const secondDuration = calculateDuration(b.dateFrom, b.dateTo);
+const sortByDuration = (start, end) => (a, b) => {
+  const firstDuration = calculateDuration(a[start], a[end]);
+  const secondDuration = calculateDuration(b[start], b[end]);
 
   return secondDuration.asMilliseconds() - firstDuration.asMilliseconds();
 };

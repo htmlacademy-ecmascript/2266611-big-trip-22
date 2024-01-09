@@ -171,10 +171,7 @@ export default class PointEditorView extends AbstractView {
     return createPointEditorTemplate(this.#point, this.#offers, this.#destinations);
   }
 
-  #editClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleEditClick();
-  };
+  #editClickHandler = () => this.#handleEditClick();
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();

@@ -32,8 +32,8 @@ export default class MainPresenter {
 
   init() {
     this.#points = [...this.#pointModel.points];
-    this.#offers = this.#pointModel.offers;
-    this.#destinations = this.#pointModel.destinations;
+    this.#offers = [...this.#pointModel.offers];
+    this.#destinations = [...this.#pointModel.destinations];
 
     this.#renderWithoutContent();
     this.#renderContent();
@@ -77,15 +77,15 @@ export default class MainPresenter {
   #sortPoints = (sortType) => {
     switch (sortType) {
       case 'day':
-        this.#points.sort(sortByDate);
+        this.#points.sort(sortByDate('dateFrom'));
         break;
       case 'time':
-        this.#points.sort(sortByDuration);
+        this.#points.sort(sortByDuration('dateFrom', 'dateTo'));
         break;
       case 'price':
         this.#points.sort(sortByValue('basePrice'));
         break;
-      default: this.#points.sort(sortByDate);
+      default: this.#points.sort(sortByDate('dateFrom'));
     }
 
     this.#currentSortType = sortType;
