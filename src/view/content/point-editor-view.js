@@ -2,7 +2,7 @@ import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
 import {upFirstLetter} from '../../utils/utils.js';
 
-import AbstractView from '../../framework/view/abstract-view.js';
+import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
 const createPointTypeGroupTemplate = (pointId, type) => (/*html*/`
   ${POINT_TYPES.map((pointType) => (
@@ -146,8 +146,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
             </li>`;
 };
 
-export default class PointEditorView extends AbstractView {
-  #point = [];
+export default class PointEditorView extends AbstractStatefulView {
   #offers = [];
   #destinations = [];
 
@@ -156,7 +155,7 @@ export default class PointEditorView extends AbstractView {
 
   constructor({point, offers, destinations, onEditClick, onFormSubmit}) {
     super();
-    this.#point = point;
+    this._setState(PointEditorView.parsePointToState(point));
     this.#offers = offers;
     this.#destinations = destinations;
 
@@ -167,14 +166,18 @@ export default class PointEditorView extends AbstractView {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
+  static parsePointToState(point) {
+    return {...point};
+  }
+
   get template() {
-    return createPointEditorTemplate(this.#point, this.#offers, this.#destinations);
+    return createPointEditorTemplate(this._state, this.#offers, this.#destinations);
   }
 
   #editClickHandler = () => this.#handleEditClick();
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(this._state);
   };
 }
