@@ -30,6 +30,7 @@ const createAvailableOffersTemplate = (pointId, defaultOffers, selectedOffers) =
               <div class="event__offer-selector">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-${convertOfferTitle(defaultOffer.title)}-${pointId}" type="checkbox"
                 name="event-offer-${convertOfferTitle(defaultOffer.title)}"
+                data-offer-id="${defaultOffer.id}"
                 ${selectedOffers.map((offer) => offer.id).includes(defaultOffer.id) ? 'checked' : ''}>
                 <label class="event__offer-label" for="event-offer-${convertOfferTitle(defaultOffer.title)}-${pointId}">
                   <span class="event__offer-title">${defaultOffer.title}</span>
@@ -162,22 +163,64 @@ export default class PointEditorView extends AbstractStatefulView {
     this.#handleEditClick = onEditClick;
     this.#handleFormSubmit = onFormSubmit;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-  }
-
-  static parsePointToState(point) {
-    return {...point};
+    this._restoreHandlers();
   }
 
   get template() {
     return createPointEditorTemplate(this._state, this.#offers, this.#destinations);
   }
 
+  static parsePointToState(point) {
+    return {...point};
+  }
+
+  static parseStateToPoint(state) {
+    return {...state};
+  }
+
+  reset(point) {
+    this.updateElement(PointEditorView.parsePointToState(point));
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeSelectedOffersHandler);
+    this.element.querySelector('.event__field-group--price').addEventListener('input', this.#changePriceHandler);
+  }
+
+  #changeTypeHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value
+    });
+  };
+
+  #changeDestinationHandler = (evt) => {
+    this.updateElement({
+      destination: this.#destinations.find((destination) => destination.name === evt.target.value).id
+    });
+  };
+
+  #changeSelectedOffersHandler = () => {
+    const selectedOffers = this.element.querySelectorAll('.event__offer-checkbox:checked');
+
+    this._setState({
+      offers: Array.from(selectedOffers).map((item) => item.dataset.offerId)
+    });
+  };
+
+  #changePriceHandler = (evt) => {
+    this._setState({
+      basePrice: parseInt(evt.target.value, 10)
+    });
+  };
+
   #editClickHandler = () => this.#handleEditClick();
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this._state);
+    this.#handleFormSubmit(PointEditorView.parseStateToPoint(this._state));
   };
 }
