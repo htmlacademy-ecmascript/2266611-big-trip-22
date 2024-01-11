@@ -221,7 +221,7 @@ export default class PointEditorView extends AbstractStatefulView {
         'time_24hr': true,
         dateFormat: DateFormat.DATE_PICKED,
         maxDate: this._state.dateTo,
-        onChange: this.#changeDateHandler('dateFrom')
+        onClose: this.#closeDateHandler('dateFrom')
       }
     );
 
@@ -232,12 +232,12 @@ export default class PointEditorView extends AbstractStatefulView {
         'time_24hr': true,
         dateFormat: DateFormat.DATE_PICKED,
         minDate: this._state.dateFrom,
-        onChange: this.#changeDateHandler('dateTo')
+        onClose: this.#closeDateHandler('dateTo')
       }
     );
   };
 
-  #changeDateHandler = (propertyName) => ([userDate]) => {
+  #closeDateHandler = (propertyName) => ([userDate]) => {
     this.updateElement({
       [propertyName]: userDate
     });
