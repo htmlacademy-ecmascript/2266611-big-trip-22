@@ -64,4 +64,11 @@ const Mode = {
   EDITING: 'editing',
 };
 
-export {POINT_TYPES, getDefaultPoint, SortType, FilterType, FilterMessage, Mode};
+export {
+  POINT_TYPES,
+  getDefaultPoint,
+  SortType,
+  FilterType,
+  FilterMessage,
+  Mode
+};

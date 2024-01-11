@@ -1,8 +1,11 @@
+import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
+
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
 import {upFirstLetter} from '../../utils/utils.js';
-
-import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/material_blue.css';
 
 const createPointTypeGroupTemplate = (pointId, type) => (/*html*/`
   ${POINT_TYPES.map((pointType) => (
@@ -148,6 +151,9 @@ const createPointEditorTemplate = (point, offers, destinations) => {
 };
 
 export default class PointEditorView extends AbstractStatefulView {
+  #dateFromPicker = null;
+  #dateToPicker = null;
+
   #offers = [];
   #destinations = [];
 
@@ -189,7 +195,53 @@ export default class PointEditorView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeSelectedOffersHandler);
     this.element.querySelector('.event__field-group--price').addEventListener('input', this.#changePriceHandler);
+
+    this.#setDatePicker();
   }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  }
+
+  #setDatePicker = () => {
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector(`#event-start-time-${this._state.id}`),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: DateFormat.DATE_PICKED,
+        maxDate: this._state.dateTo,
+        onChange: this.#changeDateHandler('dateFrom')
+      }
+    );
+
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector(`#event-end-time-${this._state.id}`),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: DateFormat.DATE_PICKED,
+        minDate: this._state.dateFrom,
+        onChange: this.#changeDateHandler('dateTo')
+      }
+    );
+  };
+
+  #changeDateHandler = (propertyName) => ([userDate]) => {
+    this.updateElement({
+      [propertyName]: userDate
+    });
+  };
 
   #changeTypeHandler = (evt) => {
     this.updateElement({
