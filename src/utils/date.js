@@ -9,7 +9,8 @@ const DateFormat = {
   EDIT_DATE: 'DD/MM/YY HH:mm',
   D_H_M_DURATION: 'DD[D] HH[H] mm[M]',
   H_M_DURATION: 'HH[H] mm[M]',
-  M_DURATION: 'mm[M]'
+  M_DURATION: 'mm[M]',
+  DATE_PICKED: 'd/m/y H:i'
 };
 
 const isDateFuture = (start) => dayjs().isBefore(start);
