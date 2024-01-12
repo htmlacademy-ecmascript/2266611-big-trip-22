@@ -30,6 +30,18 @@ export default class MainPresenter {
     this.#pointModel = pointModel;
   }
 
+  get points() {
+    return this.#pointModel.points;
+  }
+
+  get offers() {
+    return this.#pointModel.offers;
+  }
+
+  get destinations() {
+    return this.#pointModel.destinations;
+  }
+
   init() {
     this.#points = [...this.#pointModel.points];
     this.#offers = [...this.#pointModel.offers];
