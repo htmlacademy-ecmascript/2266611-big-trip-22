@@ -214,31 +214,38 @@ export default class PointEditorView extends AbstractStatefulView {
   }
 
   #setDatePicker = () => {
+    const startTime = this.element.querySelector(`#event-start-time-${this._state.id}`);
+    const endTime = this.element.querySelector(`#event-end-time-${this._state.id}`);
+
+    const commonConfigOptions = {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: DateFormat.DATE_PICKED
+    };
+
     this.#dateFromPicker = flatpickr(
-      this.element.querySelector(`#event-start-time-${this._state.id}`),
+      startTime,
       {
-        enableTime: true,
-        'time_24hr': true,
-        dateFormat: DateFormat.DATE_PICKED,
+        ...commonConfigOptions,
         maxDate: this._state.dateTo,
-        onClose: this.#closeDateHandler('dateFrom')
+        onChange: this.#changeDateHandler('dateFrom'),
+        onClose: (_, userDate) => this.#dateToPicker.set('minDate', userDate)
       }
     );
 
     this.#dateToPicker = flatpickr(
-      this.element.querySelector(`#event-end-time-${this._state.id}`),
+      endTime,
       {
-        enableTime: true,
-        'time_24hr': true,
-        dateFormat: DateFormat.DATE_PICKED,
+        ...commonConfigOptions,
         minDate: this._state.dateFrom,
-        onClose: this.#closeDateHandler('dateTo')
+        onChange: this.#changeDateHandler('dateTo'),
+        onClose: (_, userDate) => this.#dateFromPicker.set('maxDate', userDate)
       }
     );
   };
 
-  #closeDateHandler = (propertyName) => ([userDate]) => {
-    this.updateElement({
+  #changeDateHandler = (propertyName) => ([userDate]) => {
+    this._setState({
       [propertyName]: userDate
     });
   };
