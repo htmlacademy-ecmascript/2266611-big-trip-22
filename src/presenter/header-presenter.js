@@ -14,17 +14,18 @@ export default class HeaderPresenter {
   #headlineComponent = new HeadlineView();
   #buttonComponent = new ButtonView();
 
-  #points = [];
   #filters;
 
   constructor({pointModel}) {
     this.#pointModel = pointModel;
   }
 
-  init() {
-    this.#points = this.#pointModel.points;
-    this.#filters = generateFilter(this.#points);
+  get points() {
+    return this.#pointModel.points;
+  }
 
+  init() {
+    this.#filters = generateFilter(this.points);
     this.#renderHeader(this.#filters);
   }
 
