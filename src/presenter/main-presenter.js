@@ -1,43 +1,53 @@
-import {render} from '../framework/render.js';
+import {RenderPosition, render, remove} from '../framework/render.js';
 import {sortByValue} from '../utils/utils.js';
-import {SortType, UserAction, UpdateType} from '../utils/const.js';
+import {SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
+import {filter} from '../utils/filter.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import StubView from '../view/stubs/stub-view.js';
+
 import PointPresenter from './point-presenter.js';
 
 const contentContainer = document.querySelector('.trip-events');
 
 export default class MainPresenter {
   #pointModel = null;
+  #filterModel = null;
 
   #pointPresenters = new Map();
 
   #sortComponent = null;
+  #stubComponent = null;
   #listComponent = new ListView();
-  #stubComponent = new StubView();
 
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
+  #filterType = FilterType.EVERYTHING;
 
-  constructor({pointModel}) {
+  constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
+    this.#filterModel = filterModel;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointModel.points;
+    const filteredPoints = filter[this.#filterType](points);
+
     switch (this.#currentSortType) {
       case 'day':
-        return [...this.#pointModel.points].sort(sortByDate('dateFrom'));
+        return filteredPoints.sort(sortByDate('dateFrom'));
       case 'time':
-        return [...this.#pointModel.points].sort(sortByDuration('dateFrom', 'dateTo'));
+        return filteredPoints.sort(sortByDuration('dateFrom', 'dateTo'));
       case 'price':
-        return [...this.#pointModel.points].sort(sortByValue('basePrice'));
+        return filteredPoints.sort(sortByValue('basePrice'));
     }
-    return this.#pointModel.points.sort(sortByDate('dateFrom'));
+    return filteredPoints.sort(sortByDate('dateFrom'));
   }
 
   get offers() {
@@ -49,32 +59,35 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#renderWithoutContent();
+    this.#renderContainer();
     this.#renderContent();
   }
 
   // Контент
   // -----------------
 
-  #renderWithoutContent = () => {
+  #renderContent = () => {
+    this.#renderPoints();
+
     if (this.points.length === 0) {
+      this.#stubComponent = new StubView({filterType: this.#filterType});
       render(this.#stubComponent, contentContainer);
     }
-  };
 
-  #renderContent = () => {
     this.#renderSortTypes();
-
-    this.#renderContainer();
-    this.#renderPoints();
   };
 
   #clearContent = ({resetSortType = false} = {}) => {
-    this.#pointPresenters.forEach((presenter) => presenter.destroy());
-    this.#pointPresenters.clear();
+    this.#clearPoints();
+
+    if (this.#stubComponent) {
+      remove(this.#stubComponent);
+    }
+
+    remove(this.#sortComponent);
 
     if (resetSortType) {
-      this.#currentSortType = SortType.DAY;
+      this.#currentSortType = this.#defaultSortType;
     }
   };
 
@@ -86,14 +99,7 @@ export default class MainPresenter {
     const onSortTypeChange = this.#handleSortTypeChange;
 
     this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
-
-    render(this.#sortComponent, contentContainer);
-  };
-
-  #handleSortTypeChange = (sortType) => {
-    this.#currentSortType = sortType;
-    this.#clearContent();
-    this.#renderPoints();
+    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
   };
 
   // Точки
@@ -105,6 +111,11 @@ export default class MainPresenter {
 
   #renderPoints = () => {
     this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+  };
+
+  #clearPoints = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   };
 
   #renderPoint = (point, offers, destinations) => {
@@ -142,13 +153,19 @@ export default class MainPresenter {
         break;
       case UpdateType.MINOR:
         this.#clearContent();
-        this.#renderPoints();
+        this.#renderContent();
         break;
       case UpdateType.MAJOR:
         this.#clearContent({resetSortType: true});
-        this.#renderPoints();
+        this.#renderContent();
         break;
     }
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    this.#currentSortType = sortType;
+    this.#clearPoints();
+    this.#renderPoints();
   };
 
   #handleModeChange = () => {
