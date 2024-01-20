@@ -4,12 +4,17 @@ import {SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
+import HeadlineView from '../view/content/headline-view.js';
+import ButtonView from '../view/toolbar/button-view.js';
+
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import StubView from '../view/stubs/stub-view.js';
 
 import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
+const toolbarContainer = document.querySelector('.trip-main');
 const contentContainer = document.querySelector('.trip-events');
 
 export default class MainPresenter {
@@ -17,6 +22,10 @@ export default class MainPresenter {
   #filterModel = null;
 
   #pointPresenters = new Map();
+  #newPointPresenter = null;
+
+  #headlineComponent = new HeadlineView();
+  #buttonComponent = null;
 
   #sortComponent = null;
   #stubComponent = null;
@@ -29,6 +38,13 @@ export default class MainPresenter {
   constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      listContainer: this.#listComponent.element,
+      pointModel: this.#pointModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#handleNewPointFormClose
+    });
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -59,12 +75,19 @@ export default class MainPresenter {
   }
 
   init() {
+    this.#renderHeader();
     this.#renderContainer();
     this.#renderContent();
   }
 
   // Контент
   // -----------------
+
+  #renderHeader = () => {
+    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
+    render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
+    render(this.#buttonComponent, toolbarContainer);
+  };
 
   #renderContent = () => {
     this.#renderPoints();
@@ -116,6 +139,7 @@ export default class MainPresenter {
   #clearPoints = () => {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+    this.#newPointPresenter.destroy();
   };
 
   #renderPoint = (point, offers, destinations) => {
@@ -127,6 +151,12 @@ export default class MainPresenter {
 
     pointPresenter.init(point, offers, destinations);
     this.#pointPresenters.set(point.id, pointPresenter);
+  };
+
+  #createNewPoint = () => {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
   };
 
   // Обработчики
@@ -170,5 +200,15 @@ export default class MainPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+    this.#newPointPresenter.destroy();
+  };
+
+  #handleNewPointFormClose() {
+    this.#buttonComponent.element.disabled = false;
+  }
+
+  #handleNewPointButtonClick = () => {
+    this.#createNewPoint();
+    this.#buttonComponent.element.disabled = true;
   };
 }
