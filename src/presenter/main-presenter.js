@@ -162,16 +162,16 @@ export default class MainPresenter {
   // Обработчики
   // -----------------
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = (actionType, updateType, updatePoint) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, update);
+        this.#pointModel.updatePoint(updateType, updatePoint);
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
+        this.#pointModel.addPoint(updateType, updatePoint);
         break;
       case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, update);
+        this.#pointModel.deletePoint(updateType, updatePoint);
         break;
     }
   };

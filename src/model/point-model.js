@@ -4,6 +4,8 @@ import {points} from '../mocks/points.js';
 import {destinations} from '../mocks/destinations.js';
 import {offers} from '../mocks/offers.js';
 
+import {updateItem} from '../utils/utils.js';
+
 export default class PointModel extends Observable {
   #points = null;
   #destinations = null;
@@ -35,29 +37,20 @@ export default class PointModel extends Observable {
   }
 
   updatePoint(updateType, updatePoint) {
-    const index = this.#points.findIndex((point) => point.id === updatePoint.id);
+    this.#points = updateItem(this.#points, updatePoint);
 
-    if (index === -1) {
-      throw new Error('Can\'t update non-existent point');
-    }
-
-    this.#points = [...this.#points.slice(0, index), updatePoint, ...this.#points.slice(index + 1)];
-    this._notify(updateType, updatePoint);
+    this._notify(updateType, updatePoint.id);
   }
 
   addPoint(updateType, updatePoint) {
-    this.#points = [updatePoint, ...this.#points];
-    this._notify(updateType, updatePoint);
+    this.#points.push(updatePoint);
+
+    this._notify(updateType);
   }
 
   deletePoint(updateType, updatePoint) {
-    const index = this.#points.findIndex((point) => point.id === updatePoint.id);
+    this.#points = this.#points.filter((item) => item.id !== updatePoint.id);
 
-    if (index === -1) {
-      throw new Error('Can\'t delete non-existent point');
-    }
-
-    this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
     this._notify(updateType, updatePoint);
   }
 }
