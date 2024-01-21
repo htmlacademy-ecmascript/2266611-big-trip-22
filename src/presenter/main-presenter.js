@@ -40,7 +40,7 @@ export default class MainPresenter {
     this.#filterModel = filterModel;
 
     this.#newPointPresenter = new NewPointPresenter({
-      listContainer: this.#listComponent.element,
+      listComponent: this.#listComponent.element,
       pointModel: this.#pointModel,
       onDataChange: this.#handleViewAction,
       onDestroy: this.#handleNewPointFormClose
@@ -203,9 +203,9 @@ export default class MainPresenter {
     this.#newPointPresenter.destroy();
   };
 
-  #handleNewPointFormClose() {
+  #handleNewPointFormClose = () => {
     this.#buttonComponent.element.disabled = false;
-  }
+  };
 
   #handleNewPointButtonClick = () => {
     this.#createNewPoint();
