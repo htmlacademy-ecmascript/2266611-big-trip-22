@@ -110,7 +110,8 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <!-- Выбор пункта назначения -->
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-${pointId}">${type}</label>
-                    <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}">
+                    <input class="event__input  event__input--destination" id="event-destination-${pointId}"
+                    type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}" autocomplete="off" required>
 
                     <!-- Список пунктов назначения -->
                     <datalist id="destination-list-${pointId}">
@@ -133,7 +134,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}" min="1" max="100000">
                   </div>
 
                   <!-- Кнопки -->
@@ -268,6 +269,8 @@ export default class PointEditorView extends AbstractStatefulView {
         destination: newDestination.id
       });
     }
+
+    evt.target.value = '';
   };
 
   #changeSelectedOffersHandler = () => {
