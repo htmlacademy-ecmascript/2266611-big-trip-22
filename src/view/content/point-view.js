@@ -1,6 +1,7 @@
 import AbstractView from '../../framework/view/abstract-view.js';
 
 import {DateFormat, convertDate, calculateDuration, convertDuration} from '../../utils/date.js';
+import he from 'he';
 
 const createSelectedOffersTemplate = (selectedOffers) => {
   if (selectedOffers.length === 0) {
@@ -41,7 +42,7 @@ const createPointTemplate = (point, offers, destinations) => {
               </div>
 
               <!-- Тип и место события -->
-              <h3 class="event__title">${type} ${destination.name}</h3>
+              <h3 class="event__title">${type} ${he.encode(destination.name)}</h3>
 
               <!-- Время и продолжительность события -->
               <div class="event__schedule">

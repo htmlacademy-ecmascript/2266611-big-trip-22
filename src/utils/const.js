@@ -12,7 +12,8 @@ const POINT_TYPES = [
 
 const DEFAULT_POINT_TYPE = 'flight';
 
-const getDefaultPoint = () => ({
+const DEFAULT_POINT = {
+  id: 0,
   basePrice: 0,
   dateFrom: new Date().toISOString(),
   dateTo: new Date().toISOString(),
@@ -20,7 +21,7 @@ const getDefaultPoint = () => ({
   isFavorite: false,
   offers: [],
   type: DEFAULT_POINT_TYPE
-});
+};
 
 const SortType = {
   DAY: {
@@ -61,14 +62,28 @@ const FilterMessage = {
 
 const Mode = {
   DEFAULT: 'default',
-  EDITING: 'editing',
+  EDITING: 'editing'
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT'
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR'
 };
 
 export {
   POINT_TYPES,
-  getDefaultPoint,
+  DEFAULT_POINT,
   SortType,
   FilterType,
   FilterMessage,
-  Mode
+  Mode,
+  UserAction,
+  UpdateType
 };
