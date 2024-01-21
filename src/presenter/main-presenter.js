@@ -91,23 +91,24 @@ export default class MainPresenter {
 
   #renderContent = () => {
     this.#renderPoints();
-
-    if (this.points.length === 0) {
-      this.#stubComponent = new StubView({filterType: this.#filterType});
-      render(this.#stubComponent, contentContainer);
-    }
-
+    this.#renderStub();
     this.#renderSortTypes();
   };
 
   #clearContent = () => {
     this.#clearPoints();
+    remove(this.#sortComponent);
 
     if (this.#stubComponent) {
       remove(this.#stubComponent);
     }
+  };
 
-    remove(this.#sortComponent);
+  #renderStub = () => {
+    if (this.points.length === 0) {
+      this.#stubComponent = new StubView({filterType: this.#filterType});
+      render(this.#stubComponent, contentContainer);
+    }
   };
 
   // Сортировка
@@ -153,6 +154,10 @@ export default class MainPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
+
+    if (this.#stubComponent) {
+      remove(this.#stubComponent);
+    }
   };
 
   /**
@@ -211,6 +216,7 @@ export default class MainPresenter {
   };
 
   #handleNewPointFormClose = () => {
+    this.#renderStub();
     this.#buttonComponent.element.disabled = false;
   };
 
