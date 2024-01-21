@@ -12,6 +12,5 @@ pointModel.init();
 const filterPresenter = new FilterPresenter({pointModel, filterModel});
 const mainPresenter = new MainPresenter({pointModel, filterModel});
 
-
 filterPresenter.init();
 mainPresenter.init();

@@ -100,7 +100,7 @@ export default class MainPresenter {
     this.#renderSortTypes();
   };
 
-  #clearContent = ({resetSortType = false} = {}) => {
+  #clearContent = () => {
     this.#clearPoints();
 
     if (this.#stubComponent) {
@@ -108,10 +108,6 @@ export default class MainPresenter {
     }
 
     remove(this.#sortComponent);
-
-    if (resetSortType) {
-      this.#currentSortType = this.#defaultSortType;
-    }
   };
 
   // Сортировка
@@ -159,34 +155,45 @@ export default class MainPresenter {
     this.#newPointPresenter.init();
   };
 
-  // Обработчики
-  // -----------------
+  /**
+  * Обработчик любого пользовательского действия для вызова обновления модели.
+  * @param {*} actionType Действие пользователя: нужно чтобы понять, какой метод модели вызвать
+  * @param {*} updateType Тип изменений: что нужно обновить
+  * @param {*} updatedPoint Обновленные данные точки
+  */
 
-  #handleViewAction = (actionType, updateType, updatePoint) => {
+  #handleViewAction = (actionType, updateType, updatedPoint) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, updatePoint);
+        this.#pointModel.updatePoint(updateType, updatedPoint);
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, updatePoint);
+        this.#pointModel.addPoint(updateType, updatedPoint);
         break;
       case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, updatePoint);
+        this.#pointModel.deletePoint(updateType, updatedPoint);
         break;
     }
   };
 
-  #handleModelEvent = (updateType, updatePoint) => {
+  /**
+   * Обработчик-наблюдатель, который реагирует на изменения модели.
+   * @param {*} updateType Тип изменений
+   * @param {*} updatedPoint Обновленные данные точки
+   */
+
+  #handleModelEvent = (updateType, updatedPoint) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(updatePoint.id).init(updatePoint, this.offers, this.destinations);
+        this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, this.offers, this.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearContent();
         this.#renderContent();
         break;
       case UpdateType.MAJOR:
-        this.#clearContent({resetSortType: true});
+        this.#currentSortType = this.#defaultSortType;
+        this.#clearContent();
         this.#renderContent();
         break;
     }

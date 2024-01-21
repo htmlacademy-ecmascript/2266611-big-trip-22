@@ -3,6 +3,7 @@ import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, convertDate} from '../../utils/date.js';
 import {upFirstLetter} from '../../utils/utils.js';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/material_blue.css';
@@ -109,7 +110,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <!-- Выбор пункта назначения -->
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-${pointId}">${type}</label>
-                    <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name || ''}" list="destination-list-${pointId}">
+                    <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}">
 
                     <!-- Список пунктов назначения -->
                     <datalist id="destination-list-${pointId}">
