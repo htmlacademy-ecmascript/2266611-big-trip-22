@@ -1,27 +1,32 @@
 import Observable from '../framework/observable.js';
 
-import {points} from '../mocks/points.js';
-import {destinations} from '../mocks/destinations.js';
-import {offers} from '../mocks/offers.js';
-
 import {updateItem} from '../utils/utils.js';
+import {UpdateType} from '../utils/const.js';
 
 export default class PointModel extends Observable {
-  #points = null;
-  #destinations = null;
-  #offers = null;
+  #pointsApiService = null;
 
-  constructor() {
+  #points = [];
+  #offers = [];
+  #destinations = [];
+
+  constructor({pointsApiService}) {
     super();
-    this.#points = [];
-    this.#destinations = [];
-    this.#offers = [];
+    this.#pointsApiService = pointsApiService;
   }
 
-  init() {
-    this.#points = points;
-    this.#destinations = destinations;
-    this.#offers = offers;
+  async init() {
+    try {
+      this.#points = await this.#pointsApiService.getPoints();
+      this.#offers = await this.#pointsApiService.getOffers();
+      this.#destinations = await this.#pointsApiService.getDestinations();
+    } catch {
+      this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   get points() {

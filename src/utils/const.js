@@ -1,3 +1,10 @@
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
+const END_POINT = 'https://22.objects.pages.academy/big-trip';
+
 const POINT_TYPES = [
   'taxi',
   'bus',
@@ -74,10 +81,13 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export {
+  Method,
+  END_POINT,
   POINT_TYPES,
   DEFAULT_POINT,
   SortType,
