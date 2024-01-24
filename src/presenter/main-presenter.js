@@ -34,6 +34,7 @@ export default class MainPresenter {
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
@@ -105,6 +106,12 @@ export default class MainPresenter {
   };
 
   #renderStub = () => {
+    if (this.#isLoading) {
+      this.#stubComponent = new StubView({message: 'Loading...'});
+      render(this.#stubComponent, contentContainer);
+      return;
+    }
+
     if (this.points.length === 0) {
       this.#stubComponent = new StubView({filterType: this.#filterType});
       render(this.#stubComponent, contentContainer);
@@ -164,19 +171,19 @@ export default class MainPresenter {
   * Обработчик любого пользовательского действия для вызова обновления модели.
   * @param {*} actionType Действие пользователя: нужно чтобы понять, какой метод модели вызвать
   * @param {*} updateType Тип изменений: что нужно обновить
-  * @param {*} updatedPoint Обновленные данные точки
+  * @param {*} point Обновленные данные точки
   */
 
-  #handleViewAction = (actionType, updateType, updatedPoint) => {
+  #handleViewAction = (actionType, updateType, point) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, updatedPoint);
+        this.#pointModel.updatePoint(updateType, point);
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, updatedPoint);
+        this.#pointModel.addPoint(updateType, point);
         break;
       case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, updatedPoint);
+        this.#pointModel.deletePoint(updateType, point);
         break;
     }
   };
@@ -184,13 +191,13 @@ export default class MainPresenter {
   /**
    * Обработчик-наблюдатель, который реагирует на изменения модели.
    * @param {*} updateType Тип изменений
-   * @param {*} updatedPoint Обновленные данные точки
+   * @param {*} point Обновленные данные точки
    */
 
-  #handleModelEvent = (updateType, updatedPoint) => {
+  #handleModelEvent = (updateType, point) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, this.offers, this.destinations);
+        this.#pointPresenters.get(point.id).init(point, this.offers, this.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearContent();
@@ -198,6 +205,12 @@ export default class MainPresenter {
         break;
       case UpdateType.MAJOR:
         this.#currentSortType = this.#defaultSortType;
+        this.#clearContent();
+        this.#renderContent();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#stubComponent);
         this.#clearContent();
         this.#renderContent();
         break;
