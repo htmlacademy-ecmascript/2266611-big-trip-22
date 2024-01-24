@@ -11,19 +11,11 @@ export default class PointsApiService extends ApiService {
   }
 
   async getOffers() {
-    const response = await this._load({url: 'offers'});
-    const parsedResponse = await ApiService.parseResponse(response);
-    const adaptedOffers = parsedResponse.map(this.#adaptToClient);
-
-    return adaptedOffers;
+    return this._load({url: 'offers'}).then(ApiService.parseResponse);
   }
 
   async getDestinations() {
-    const response = await this._load({url: 'destinations'});
-    const parsedResponse = await ApiService.parseResponse(response);
-    const adaptedDestinations = parsedResponse.map(this.#adaptToClient);
-
-    return adaptedDestinations;
+    return this._load({url: 'destinations'}).then(ApiService.parseResponse);
   }
 
   async updatePoint(point) {
