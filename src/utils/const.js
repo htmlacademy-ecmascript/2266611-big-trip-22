@@ -1,9 +1,13 @@
+import {generateTokenId} from './token.js';
+
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
 };
 
 const END_POINT = 'https://22.objects.pages.academy/big-trip';
+
+const Authorization = generateTokenId();
 
 const POINT_TYPES = [
   'taxi',
@@ -88,6 +92,7 @@ const UpdateType = {
 export {
   Method,
   END_POINT,
+  Authorization,
   POINT_TYPES,
   DEFAULT_POINT,
   SortType,
