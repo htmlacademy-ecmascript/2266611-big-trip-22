@@ -34,7 +34,6 @@ export default class MainPresenter {
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
-  #isLoading = true;
 
   constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
@@ -106,12 +105,6 @@ export default class MainPresenter {
   };
 
   #renderStub = () => {
-    if (this.#isLoading) {
-      this.#stubComponent = new StubView({message: 'Loading...'});
-      render(this.#stubComponent, contentContainer);
-      return;
-    }
-
     if (this.points.length === 0) {
       this.#stubComponent = new StubView({filterType: this.#filterType});
       render(this.#stubComponent, contentContainer);
@@ -209,8 +202,6 @@ export default class MainPresenter {
         this.#renderContent();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#stubComponent);
         this.#clearContent();
         this.#renderContent();
         break;
