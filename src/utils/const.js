@@ -3,6 +3,8 @@ import {generateTokenId} from './token.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 const END_POINT = 'https://22.objects.pages.academy/big-trip';
