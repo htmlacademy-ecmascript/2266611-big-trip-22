@@ -77,7 +77,6 @@ export default class MainPresenter {
   init() {
     this.#renderHeader();
     this.#renderContainer();
-    this.#renderContent();
   }
 
   // Контент
