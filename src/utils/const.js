@@ -7,7 +7,7 @@ const Method = {
   DELETE: 'DELETE'
 };
 
-const END_POINT = 'https://22.objects.pages.academy/big-trip';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const Authorization = generateTokenId();
 
