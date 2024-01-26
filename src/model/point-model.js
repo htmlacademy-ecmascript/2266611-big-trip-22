@@ -1,12 +1,7 @@
 import Observable from '../framework/observable.js';
 
-import {render, remove} from '../framework/render.js';
 import {updateItem} from '../utils/utils.js';
 import {UpdateType} from '../utils/const.js';
-
-import LoaderView from '../view/stubs/loader-view.js';
-
-const contentContainer = document.querySelector('.trip-events');
 
 export default class PointModel extends Observable {
   #pointsApiService = null;
@@ -15,7 +10,7 @@ export default class PointModel extends Observable {
   #offers = [];
   #destinations = [];
 
-  #loaderComponent = new LoaderView();
+  #isLoading = true;
 
   constructor({pointsApiService}) {
     super();
@@ -23,28 +18,22 @@ export default class PointModel extends Observable {
   }
 
   async init() {
-    this.#activateLoader();
-
     try {
       this.#points = await this.#pointsApiService.getPoints();
       this.#offers = await this.#pointsApiService.getOffers();
       this.#destinations = await this.#pointsApiService.getDestinations();
 
-      this.#deactivateLoader();
+      this.#isLoading = false;
     } catch {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
 
-      this.#deactivateLoader();
+      this.#isLoading = false;
     }
 
     this._notify(UpdateType.INIT);
   }
-
-  #activateLoader = () => render(this.#loaderComponent, contentContainer);
-
-  #deactivateLoader = () => remove(this.#loaderComponent);
 
   get points() {
     return this.#points;
@@ -56,6 +45,10 @@ export default class PointModel extends Observable {
 
   get destinations() {
     return this.#destinations;
+  }
+
+  get loader() {
+    return this.#isLoading;
   }
 
   async updatePoint(updateType, point) {

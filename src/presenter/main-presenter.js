@@ -10,6 +10,7 @@ import ButtonView from '../view/toolbar/button-view.js';
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import StubView from '../view/stubs/stub-view.js';
+import LoaderView from '../view/stubs/loader-view.js';
 
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -26,9 +27,9 @@ export default class MainPresenter {
 
   #headlineComponent = new HeadlineView();
   #buttonComponent = null;
-
   #sortComponent = null;
   #stubComponent = null;
+  #loaderComponent = new LoaderView();
   #listComponent = new ListView();
 
   #defaultSortType = SortType.DAY;
@@ -56,11 +57,11 @@ export default class MainPresenter {
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case 'day':
+      case SortType.DAY.name:
         return filteredPoints.sort(sortByDate('dateFrom'));
-      case 'time':
+      case SortType.TIME.name:
         return filteredPoints.sort(sortByDuration('dateFrom', 'dateTo'));
-      case 'price':
+      case SortType.PRICE.name:
         return filteredPoints.sort(sortByValue('basePrice'));
     }
     return filteredPoints.sort(sortByDate('dateFrom'));
@@ -74,9 +75,14 @@ export default class MainPresenter {
     return this.#pointModel.destinations;
   }
 
+  get loader() {
+    return this.#pointModel.loader;
+  }
+
   init() {
     this.#renderHeader();
-    this.#renderContainer();
+    this.#renderPointsContainer();
+    this.#renderContent();
   }
 
   // Контент
@@ -104,6 +110,13 @@ export default class MainPresenter {
   };
 
   #renderStub = () => {
+    if (this.loader) {
+      render(this.#loaderComponent, contentContainer);
+      return;
+    } else {
+      remove(this.#loaderComponent);
+    }
+
     if (this.points.length === 0) {
       this.#stubComponent = new StubView({filterType: this.#filterType});
       render(this.#stubComponent, contentContainer);
@@ -124,7 +137,7 @@ export default class MainPresenter {
   // Точки
   // -----------------
 
-  #renderContainer = () => {
+  #renderPointsContainer = () => {
     render(this.#listComponent, contentContainer);
   };
 
