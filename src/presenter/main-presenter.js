@@ -1,6 +1,6 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
 import {sortByValue} from '../utils/utils.js';
-import {SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
+import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
@@ -9,7 +9,7 @@ import ButtonView from '../view/toolbar/button-view.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
-import StubView from '../view/stubs/stub-view.js';
+import AlertView from '../view/stubs/alert-view.js';
 import LoaderView from '../view/stubs/loader-view.js';
 
 import PointPresenter from './point-presenter.js';
@@ -28,7 +28,7 @@ export default class MainPresenter {
   #headlineComponent = new HeadlineView();
   #buttonComponent = null;
   #sortComponent = null;
-  #stubComponent = null;
+  #alertComponent = null;
   #loaderComponent = new LoaderView();
   #listComponent = new ListView();
 
@@ -75,12 +75,17 @@ export default class MainPresenter {
     return this.#pointModel.destinations;
   }
 
-  get loader() {
-    return this.#pointModel.loader;
+  get loading() {
+    return this.#pointModel.loading;
+  }
+
+  get error() {
+    return this.#pointModel.error;
   }
 
   init() {
     this.#renderHeader();
+    this.#renderButton();
     this.#renderPointsContainer();
     this.#renderContent();
   }
@@ -89,8 +94,11 @@ export default class MainPresenter {
   // -----------------
 
   #renderHeader = () => {
-    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
     render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
+  };
+
+  #renderButton = () => {
+    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
     render(this.#buttonComponent, toolbarContainer);
   };
 
@@ -104,22 +112,33 @@ export default class MainPresenter {
     this.#clearPoints();
     remove(this.#sortComponent);
 
-    if (this.#stubComponent) {
-      remove(this.#stubComponent);
+    if (this.#alertComponent) {
+      remove(this.#alertComponent);
     }
   };
 
+  /**
+   * Функция для отрисовки сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута.
+   * @returns {HTMLElement} Элемент в котором будет отрисован компонент
+   */
+
   #renderStub = () => {
-    if (this.loader) {
+    if (this.loading) {
       render(this.#loaderComponent, contentContainer);
       return;
     } else {
       remove(this.#loaderComponent);
     }
 
+    if (this.error) {
+      this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
+      render(this.#alertComponent, contentContainer);
+      return;
+    }
+
     if (this.points.length === 0) {
-      this.#stubComponent = new StubView({filterType: this.#filterType});
-      render(this.#stubComponent, contentContainer);
+      this.#alertComponent = new AlertView({filterType: this.#filterType});
+      render(this.#alertComponent, contentContainer);
     }
   };
 
@@ -167,8 +186,8 @@ export default class MainPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
-    if (this.#stubComponent) {
-      remove(this.#stubComponent);
+    if (this.#alertComponent) {
+      remove(this.#alertComponent);
     }
   };
 

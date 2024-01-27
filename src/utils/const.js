@@ -9,6 +9,8 @@ const Method = {
 
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
+const FAILED_LOAD = 'Failed to load latest route information';
+
 const Authorization = generateTokenId();
 
 const POINT_TYPES = [
@@ -94,6 +96,7 @@ const UpdateType = {
 export {
   Method,
   END_POINT,
+  FAILED_LOAD,
   Authorization,
   POINT_TYPES,
   DEFAULT_POINT,

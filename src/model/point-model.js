@@ -11,6 +11,7 @@ export default class PointModel extends Observable {
   #destinations = [];
 
   #isLoading = true;
+  #isLoadingFailed = false;
 
   constructor({pointsApiService}) {
     super();
@@ -30,6 +31,7 @@ export default class PointModel extends Observable {
       this.#destinations = [];
 
       this.#isLoading = false;
+      this.#isLoadingFailed = true;
     }
 
     this._notify(UpdateType.INIT);
@@ -47,8 +49,12 @@ export default class PointModel extends Observable {
     return this.#destinations;
   }
 
-  get loader() {
+  get loading() {
     return this.#isLoading;
+  }
+
+  get error() {
+    return this.#isLoadingFailed;
   }
 
   async updatePoint(updateType, point) {
