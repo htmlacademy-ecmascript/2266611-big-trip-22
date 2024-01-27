@@ -84,16 +84,12 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#renderHeader();
     this.#renderButton();
     this.#renderPointsContainer();
     this.#renderContent();
   }
 
-  // Контент
-  // -----------------
-
-  #renderHeader = () => {
+  #renderHeadline = () => {
     render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
   };
 
@@ -107,6 +103,7 @@ export default class MainPresenter {
     this.#renderStub();
 
     if (this.points.length > 0) {
+      this.#renderHeadline();
       this.#renderSortTypes();
     }
   };
@@ -119,45 +116,6 @@ export default class MainPresenter {
       remove(this.#alertComponent);
     }
   };
-
-  /**
-   * Функция для отрисовки сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута.
-   * @returns {HTMLElement} Элемент в котором будет отрисован компонент
-   */
-
-  #renderStub = () => {
-    if (this.loading) {
-      render(this.#loaderComponent, contentContainer);
-      return;
-    } else {
-      remove(this.#loaderComponent);
-    }
-
-    if (this.error) {
-      this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
-      render(this.#alertComponent, contentContainer);
-      return;
-    }
-
-    if (this.points.length === 0) {
-      this.#alertComponent = new AlertView({filterType: this.#filterType});
-      render(this.#alertComponent, contentContainer);
-    }
-  };
-
-  // Сортировка
-  // -----------------
-
-  #renderSortTypes = () => {
-    const currentSortType = this.#currentSortType;
-    const onSortTypeChange = this.#handleSortTypeChange;
-
-    this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
-    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
-  };
-
-  // Точки
-  // -----------------
 
   #renderPointsContainer = () => {
     render(this.#listComponent, contentContainer);
@@ -191,6 +149,43 @@ export default class MainPresenter {
 
     if (this.#alertComponent) {
       remove(this.#alertComponent);
+    }
+  };
+
+  /**
+   * Функция для отрисовки сортировки с выбранным типом.
+   */
+
+  #renderSortTypes = () => {
+    const currentSortType = this.#currentSortType;
+    const onSortTypeChange = this.#handleSortTypeChange;
+
+    this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
+    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
+  };
+
+  /**
+   * Функция для отрисовки сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута.
+   * @returns {HTMLElement} Элемент в котором будет отрисован компонент
+   */
+
+  #renderStub = () => {
+    if (this.loading) {
+      render(this.#loaderComponent, contentContainer);
+      return;
+    } else {
+      remove(this.#loaderComponent);
+    }
+
+    if (this.error) {
+      this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
+      render(this.#alertComponent, contentContainer);
+      return;
+    }
+
+    if (this.points.length === 0) {
+      this.#alertComponent = new AlertView({filterType: this.#filterType});
+      render(this.#alertComponent, contentContainer);
     }
   };
 
