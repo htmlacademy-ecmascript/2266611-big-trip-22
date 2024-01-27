@@ -81,6 +81,16 @@ const createDetailsTemplate = (pointId, defaultOffers, selectedOffers, descripti
           </section>`;
 };
 
+const createRollupButtonTemplate = (id) => {
+  if (id) {
+    return `<button class="event__rollup-btn" type="button">
+              <span class="visually-hidden">Open event</span>
+            </button>`;
+  }
+
+  return '';
+};
+
 const createPointEditorTemplate = (point, offers, destinations) => {
   const defaultOffers = offers.find((offer) => offer.type === point.type).offers;
   const selectedOffers = defaultOffers.filter((defaultOffer) => point.offers.includes(defaultOffer.id));
@@ -147,9 +157,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <!-- Кнопки -->
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
-                  <button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>
+                  ${createRollupButtonTemplate(point.id)}
                 </header>
 
                 <!-- Дополнительные опции и описание пункта назначения -->
@@ -200,7 +208,7 @@ export default class PointEditorView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#editClickHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('form').addEventListener('reset', this.#formDeleteClickHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTypeHandler);

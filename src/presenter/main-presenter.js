@@ -105,7 +105,10 @@ export default class MainPresenter {
   #renderContent = () => {
     this.#renderPoints();
     this.#renderStub();
-    this.#renderSortTypes();
+
+    if (this.points.length > 0) {
+      this.#renderSortTypes();
+    }
   };
 
   #clearContent = () => {
