@@ -93,6 +93,11 @@ const UpdateType = {
   INIT: 'INIT'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export {
   Method,
   END_POINT,
@@ -105,5 +110,6 @@ export {
   FilterMessage,
   Mode,
   UserAction,
-  UpdateType
+  UpdateType,
+  TimeLimit
 };

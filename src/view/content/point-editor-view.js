@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
 import {POINT_TYPES} from '../../utils/const.js';
-import {DateFormat, convertDate} from '../../utils/date.js';
+import {DateFormat, commonConfigOptions, convertDate} from '../../utils/date.js';
 import {upFirstLetter} from '../../utils/utils.js';
 import he from 'he';
 import flatpickr from 'flatpickr';
@@ -19,7 +19,7 @@ const createPointTypeGroupTemplate = (pointId, type) => (/*html*/`
 
 const createPointDestinationsTemplate = (destinations) => destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
 
-const createAvailableOffersTemplate = (pointId, defaultOffers, selectedOffers) => {
+const createAvailableOffersTemplate = (pointId, defaultOffers, selectedOffers, isDisabled) => {
   const convertOfferTitle = (title) => title.toLowerCase().split(' ').join('-');
 
   if (defaultOffers.length === 0) {
@@ -35,7 +35,8 @@ const createAvailableOffersTemplate = (pointId, defaultOffers, selectedOffers) =
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-${convertOfferTitle(defaultOffer.title)}-${pointId}" type="checkbox"
                 name="event-offer-${convertOfferTitle(defaultOffer.title)}"
                 data-offer-id="${defaultOffer.id}"
-                ${selectedOffers.map((offer) => offer.id).includes(defaultOffer.id) ? 'checked' : ''}>
+                ${selectedOffers.map((offer) => offer.id).includes(defaultOffer.id) ? 'checked' : ''}
+                ${isDisabled ? 'disabled' : ''}>
                 <label class="event__offer-label" for="event-offer-${convertOfferTitle(defaultOffer.title)}-${pointId}">
                   <span class="event__offer-title">${defaultOffer.title}</span>
                   &plus;&euro;&nbsp;
@@ -70,13 +71,13 @@ const createDestinationDescriptionTemplate = (description, pictures) => {
           </section>`;
 };
 
-const createDetailsTemplate = (pointId, defaultOffers, selectedOffers, description, pictures) => {
+const createDetailsTemplate = (pointId, defaultOffers, selectedOffers, description, pictures, isDisabled) => {
   if (defaultOffers.length === 0 && !description) {
     return '';
   }
 
   return `<section class="event__details">
-            ${createAvailableOffersTemplate(pointId, defaultOffers, selectedOffers)}
+            ${createAvailableOffersTemplate(pointId, defaultOffers, selectedOffers, isDisabled)}
             ${createDestinationDescriptionTemplate(description, pictures)}
           </section>`;
 };
@@ -148,10 +149,10 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <!-- Выбор даты и времени события -->
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? 'disabled' : ''}>
+                    <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? 'disabled' : ''} required>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${endTime}" ${isDisabled ? 'disabled' : ''}>
+                    <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${endTime}" ${isDisabled ? 'disabled' : ''} required>
                   </div>
 
                   <!-- Стоимость -->
@@ -170,7 +171,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                 </header>
 
                 <!-- Дополнительные опции и описание пункта назначения -->
-                ${createDetailsTemplate(pointId, defaultOffers, selectedOffers, description, pictures)}
+                ${createDetailsTemplate(pointId, defaultOffers, selectedOffers, description, pictures, isDisabled)}
 
               </form>
             </li>`;
@@ -255,12 +256,6 @@ export default class PointEditorView extends AbstractStatefulView {
   #setDatePicker = () => {
     const startTime = this.element.querySelector(`#event-start-time-${this._state.id}`);
     const endTime = this.element.querySelector(`#event-end-time-${this._state.id}`);
-
-    const commonConfigOptions = {
-      enableTime: true,
-      'time_24hr': true,
-      dateFormat: DateFormat.DATE_PICKED
-    };
 
     this.#dateFromPicker = flatpickr(
       startTime,

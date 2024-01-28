@@ -1,6 +1,7 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {sortByValue} from '../utils/utils.js';
-import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
+import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
@@ -35,6 +36,11 @@ export default class MainPresenter {
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
@@ -197,6 +203,8 @@ export default class MainPresenter {
   */
 
   #handleViewAction = async (actionType, updateType, point) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(point.id).setSaving();
@@ -223,6 +231,8 @@ export default class MainPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   /**
