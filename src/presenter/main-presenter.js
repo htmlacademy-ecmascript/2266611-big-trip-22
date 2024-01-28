@@ -109,7 +109,6 @@ export default class MainPresenter {
   };
 
   #clearContent = () => {
-    remove(this.#headlineComponent);
     remove(this.#sortComponent);
     this.#clearPoints();
 
@@ -197,19 +196,31 @@ export default class MainPresenter {
   * @param {*} point Обновленные данные точки
   */
 
-  #handleViewAction = (actionType, updateType, point) => {
+  #handleViewAction = async (actionType, updateType, point) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(point.id).setSaving();
-        this.#pointModel.updatePoint(updateType, point);
+        try {
+          await this.#pointModel.updatePoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#newPointPresenter.setSaving();
-        this.#pointModel.addPoint(updateType, point);
+        try {
+          await this.#pointModel.addPoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
         this.#pointPresenters.get(point.id).setDeleting();
-        this.#pointModel.deletePoint(updateType, point);
+        try {
+          await this.#pointModel.deletePoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
         break;
     }
   };

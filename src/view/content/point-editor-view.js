@@ -121,7 +121,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <!-- Список типов событий -->
                     <div class="event__type-list">
@@ -136,7 +136,8 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-${pointId}">${type}</label>
                     <input class="event__input  event__input--destination" id="event-destination-${pointId}"
-                    type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}" autocomplete="off" required>
+                    type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}" autocomplete="off"
+                    ${isDisabled ? 'disabled' : ''} required>
 
                     <!-- Список пунктов назначения -->
                     <datalist id="destination-list-${pointId}">
@@ -147,10 +148,10 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   <!-- Выбор даты и времени события -->
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${startTime}">
+                    <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${endTime}">
+                    <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${endTime}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <!-- Стоимость -->
@@ -159,7 +160,7 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}" min="1" max="100000">
+                    <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}" min="1" max="100000" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <!-- Кнопки -->
