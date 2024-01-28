@@ -5,9 +5,7 @@ import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} fr
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
-import HeadlineView from '../view/content/headline-view.js';
 import CtaButtonView from '../view/toolbar/cta-button-view.js';
-
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
 import AlertView from '../view/stubs/alert-view.js';
@@ -26,7 +24,6 @@ export default class MainPresenter {
   #pointPresenters = new Map();
   #newPointPresenter = null;
 
-  #headlineComponent = new HeadlineView();
   #ctaButtonComponent = null;
   #sortComponent = null;
   #alertComponent = null;
@@ -95,10 +92,6 @@ export default class MainPresenter {
     this.#renderContent();
   }
 
-  #renderHeadline = () => {
-    render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
-  };
-
   #renderCtaButton = () => {
     this.#ctaButtonComponent = new CtaButtonView({onClick: this.#handleCtaButtonClick});
     render(this.#ctaButtonComponent, toolbarContainer);
@@ -109,7 +102,6 @@ export default class MainPresenter {
     this.#setInterfaceState();
 
     if (this.points.length > 0) {
-      this.#renderHeadline();
       this.#renderSortTypes();
     }
   };
