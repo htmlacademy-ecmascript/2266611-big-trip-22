@@ -13,6 +13,13 @@ const DateFormat = {
   DATE_PICKED: 'd/m/y H:i'
 };
 
+const commonConfigOptions = {
+  disableMobile: 'true',
+  enableTime: true,
+  'time_24hr': true,
+  dateFormat: DateFormat.DATE_PICKED
+};
+
 const isDateFuture = (start) => dayjs().isBefore(start);
 
 const isDatePresent = (start, end) => dayjs().isAfter(start) && dayjs().isBefore(end);
@@ -49,6 +56,7 @@ export {
   isDatePresent,
   isDatePast,
   DateFormat,
+  commonConfigOptions,
   convertDate,
   calculateDuration,
   convertDuration,

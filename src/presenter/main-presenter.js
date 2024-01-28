@@ -1,15 +1,15 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {sortByValue} from '../utils/utils.js';
-import {SortType, UserAction, UpdateType, FilterType} from '../utils/const.js';
+import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
-import HeadlineView from '../view/content/headline-view.js';
-import ButtonView from '../view/toolbar/button-view.js';
-
+import CtaButtonView from '../view/toolbar/cta-button-view.js';
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
-import StubView from '../view/stubs/stub-view.js';
+import AlertView from '../view/stubs/alert-view.js';
+import LoaderView from '../view/stubs/loader-view.js';
 
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -24,17 +24,20 @@ export default class MainPresenter {
   #pointPresenters = new Map();
   #newPointPresenter = null;
 
-  #headlineComponent = new HeadlineView();
-  #buttonComponent = null;
-
+  #ctaButtonComponent = null;
   #sortComponent = null;
-  #stubComponent = null;
+  #alertComponent = null;
+  #loaderComponent = new LoaderView();
   #listComponent = new ListView();
 
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
-  #isLoading = true;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({pointModel, filterModel}) {
     this.#pointModel = pointModel;
@@ -57,11 +60,11 @@ export default class MainPresenter {
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case 'day':
+      case SortType.DAY.name:
         return filteredPoints.sort(sortByDate('dateFrom'));
-      case 'time':
+      case SortType.TIME.name:
         return filteredPoints.sort(sortByDuration('dateFrom', 'dateTo'));
-      case 'price':
+      case SortType.PRICE.name:
         return filteredPoints.sort(sortByValue('basePrice'));
     }
     return filteredPoints.sort(sortByDate('dateFrom'));
@@ -75,64 +78,44 @@ export default class MainPresenter {
     return this.#pointModel.destinations;
   }
 
+  get loading() {
+    return this.#pointModel.loading;
+  }
+
+  get error() {
+    return this.#pointModel.error;
+  }
+
   init() {
-    this.#renderHeader();
-    this.#renderContainer();
+    this.#renderCtaButton();
+    this.#renderPointsContainer();
     this.#renderContent();
   }
 
-  // Контент
-  // -----------------
-
-  #renderHeader = () => {
-    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
-    render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
-    render(this.#buttonComponent, toolbarContainer);
+  #renderCtaButton = () => {
+    this.#ctaButtonComponent = new CtaButtonView({onClick: this.#handleCtaButtonClick});
+    render(this.#ctaButtonComponent, toolbarContainer);
   };
 
   #renderContent = () => {
     this.#renderPoints();
-    this.#renderStub();
-    this.#renderSortTypes();
+    this.#setInterfaceState();
+
+    if (this.points.length > 0) {
+      this.#renderSortTypes();
+    }
   };
 
   #clearContent = () => {
-    this.#clearPoints();
     remove(this.#sortComponent);
+    this.#clearPoints();
 
-    if (this.#stubComponent) {
-      remove(this.#stubComponent);
+    if (this.#alertComponent) {
+      remove(this.#alertComponent);
     }
   };
 
-  #renderStub = () => {
-    if (this.#isLoading) {
-      this.#stubComponent = new StubView({message: 'Loading...'});
-      render(this.#stubComponent, contentContainer);
-      return;
-    }
-
-    if (this.points.length === 0) {
-      this.#stubComponent = new StubView({filterType: this.#filterType});
-      render(this.#stubComponent, contentContainer);
-    }
-  };
-
-  // Сортировка
-  // -----------------
-
-  #renderSortTypes = () => {
-    const currentSortType = this.#currentSortType;
-    const onSortTypeChange = this.#handleSortTypeChange;
-
-    this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
-    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
-  };
-
-  // Точки
-  // -----------------
-
-  #renderContainer = () => {
+  #renderPointsContainer = () => {
     render(this.#listComponent, contentContainer);
   };
 
@@ -162,9 +145,59 @@ export default class MainPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
-    if (this.#stubComponent) {
-      remove(this.#stubComponent);
+    if (this.#alertComponent) {
+      remove(this.#alertComponent);
     }
+  };
+
+  /**
+   * Функция для отрисовки сортировки с выбранным типом.
+   */
+
+  #renderSortTypes = () => {
+    const currentSortType = this.#currentSortType;
+    const onSortTypeChange = this.#handleSortTypeChange;
+
+    this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
+    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
+  };
+
+  /**
+   * Функция для обработки обратной связи с информацией или результатами:
+   * отрисовка сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута,
+   * блокировка кнопки при загрузке данных.
+   * @returns {HTMLElement} Элемент в котором будет отрисован компонент
+   */
+
+  #setInterfaceState = () => {
+    if (this.loading) {
+      render(this.#loaderComponent, contentContainer);
+      this.#deactivateCtaButton();
+      return;
+    } else {
+      remove(this.#loaderComponent);
+      this.#activateCtaButton();
+    }
+
+    if (this.error) {
+      this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
+      render(this.#alertComponent, contentContainer);
+      this.#deactivateCtaButton();
+      return;
+    }
+
+    if (this.points.length === 0) {
+      this.#alertComponent = new AlertView({filterType: this.#filterType});
+      render(this.#alertComponent, contentContainer);
+    }
+  };
+
+  #activateCtaButton = () => {
+    this.#ctaButtonComponent.element.disabled = false;
+  };
+
+  #deactivateCtaButton = () => {
+    this.#ctaButtonComponent.element.disabled = true;
   };
 
   /**
@@ -174,18 +207,37 @@ export default class MainPresenter {
   * @param {*} point Обновленные данные точки
   */
 
-  #handleViewAction = (actionType, updateType, point) => {
+  #handleViewAction = async (actionType, updateType, point) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, point);
+        this.#pointPresenters.get(point.id).setSaving();
+        try {
+          await this.#pointModel.updatePoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, point);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointModel.addPoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, point);
+        this.#pointPresenters.get(point.id).setDeleting();
+        try {
+          await this.#pointModel.deletePoint(updateType, point);
+        } catch(err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   /**
@@ -209,8 +261,6 @@ export default class MainPresenter {
         this.#renderContent();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#stubComponent);
         this.#clearContent();
         this.#renderContent();
         break;
@@ -229,12 +279,12 @@ export default class MainPresenter {
   };
 
   #handleNewPointFormClose = () => {
-    this.#renderStub();
-    this.#buttonComponent.element.disabled = false;
+    this.#setInterfaceState();
+    this.#activateCtaButton();
   };
 
-  #handleNewPointButtonClick = () => {
+  #handleCtaButtonClick = () => {
     this.#createNewPoint();
-    this.#buttonComponent.element.disabled = true;
+    this.#deactivateCtaButton();
   };
 }

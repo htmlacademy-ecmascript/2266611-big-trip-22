@@ -3,9 +3,13 @@ import {generateTokenId} from './token.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
-const END_POINT = 'https://22.objects.pages.academy/big-trip';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+
+const FAILED_LOAD = 'Failed to load latest route information';
 
 const Authorization = generateTokenId();
 
@@ -89,9 +93,15 @@ const UpdateType = {
   INIT: 'INIT'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export {
   Method,
   END_POINT,
+  FAILED_LOAD,
   Authorization,
   POINT_TYPES,
   DEFAULT_POINT,
@@ -100,5 +110,6 @@ export {
   FilterMessage,
   Mode,
   UserAction,
-  UpdateType
+  UpdateType,
+  TimeLimit
 };

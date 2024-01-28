@@ -1,6 +1,7 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import PointEditorView from '../view/content/point-editor-view.js';
 import {DEFAULT_POINT, UserAction, UpdateType} from '../utils/const.js';
+
+import PointEditorView from '../view/content/point-editor-view.js';
 
 export default class NewPointPresenter {
   #listComponent = null;
@@ -52,13 +53,31 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#pointEditorComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditorComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditorComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point,
     );
-    this.destroy();
   };
 
   #handleCancelClick = () => {
