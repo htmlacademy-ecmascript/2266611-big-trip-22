@@ -109,8 +109,9 @@ export default class MainPresenter {
   };
 
   #clearContent = () => {
-    this.#clearPoints();
+    remove(this.#headlineComponent);
     remove(this.#sortComponent);
+    this.#clearPoints();
 
     if (this.#alertComponent) {
       remove(this.#alertComponent);
@@ -199,12 +200,15 @@ export default class MainPresenter {
   #handleViewAction = (actionType, updateType, point) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this.#pointPresenters.get(point.id).setSaving();
         this.#pointModel.updatePoint(updateType, point);
         break;
       case UserAction.ADD_POINT:
+        this.#newPointPresenter.setSaving();
         this.#pointModel.addPoint(updateType, point);
         break;
       case UserAction.DELETE_POINT:
+        this.#pointPresenters.get(point.id).setDeleting();
         this.#pointModel.deletePoint(updateType, point);
         break;
     }

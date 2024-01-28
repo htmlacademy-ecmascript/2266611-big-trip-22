@@ -96,12 +96,20 @@ const createPointEditorTemplate = (point, offers, destinations) => {
   const selectedOffers = defaultOffers.filter((defaultOffer) => point.offers.includes(defaultOffer.id));
   const pointDestination = destinations.find((item) => item.id === point.destination);
 
-  const {basePrice, dateFrom, dateTo, type} = point;
+  const {basePrice, dateFrom, dateTo, type, isDisabled, isSaving, isDeleting} = point;
   const {description, name, pictures} = pointDestination || {};
   const pointId = point.id || 0;
 
   const startTime = convertDate(dateFrom, DateFormat.EDIT_DATE);
   const endTime = convertDate(dateTo, DateFormat.EDIT_DATE);
+
+  const setButtonValue = () => {
+    if (pointId === 0) {
+      return 'Cancel';
+    }
+
+    return isDeleting ? 'Deleting...' : 'Delete';
+  };
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -155,8 +163,8 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   </div>
 
                   <!-- Кнопки -->
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${setButtonValue()}</button>
                   ${createRollupButtonTemplate(point.id)}
                 </header>
 
@@ -196,11 +204,21 @@ export default class PointEditorView extends AbstractStatefulView {
   }
 
   static parsePointToState(point) {
-    return {...point};
+    return {...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    };
   }
 
   static parseStateToPoint(state) {
-    return {...state};
+    const point = {...state};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 
   reset(point) {
