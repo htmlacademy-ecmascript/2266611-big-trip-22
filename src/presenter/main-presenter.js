@@ -6,7 +6,7 @@ import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
 import HeadlineView from '../view/content/headline-view.js';
-import ButtonView from '../view/toolbar/button-view.js';
+import CtaButtonView from '../view/toolbar/cta-button-view.js';
 
 import SortView from '../view/toolbar/sort-view.js';
 import ListView from '../view/content/list-view.js';
@@ -27,7 +27,7 @@ export default class MainPresenter {
   #newPointPresenter = null;
 
   #headlineComponent = new HeadlineView();
-  #buttonComponent = null;
+  #ctaButtonComponent = null;
   #sortComponent = null;
   #alertComponent = null;
   #loaderComponent = new LoaderView();
@@ -90,7 +90,7 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#renderButton();
+    this.#renderCtaButton();
     this.#renderPointsContainer();
     this.#renderContent();
   }
@@ -99,14 +99,14 @@ export default class MainPresenter {
     render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
   };
 
-  #renderButton = () => {
-    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
-    render(this.#buttonComponent, toolbarContainer);
+  #renderCtaButton = () => {
+    this.#ctaButtonComponent = new CtaButtonView({onClick: this.#handleCtaButtonClick});
+    render(this.#ctaButtonComponent, toolbarContainer);
   };
 
   #renderContent = () => {
     this.#renderPoints();
-    this.#renderStub();
+    this.#setInterfaceState();
 
     if (this.points.length > 0) {
       this.#renderHeadline();
@@ -171,21 +171,26 @@ export default class MainPresenter {
   };
 
   /**
-   * Функция для отрисовки сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута.
+   * Функция для обработки обратной связи с информацией или результатами:
+   * отрисовка сообщений-заглушек о загрузке данных, ошибке загрузки данных и отсутствии точек маршрута,
+   * блокировка кнопки при загрузке данных.
    * @returns {HTMLElement} Элемент в котором будет отрисован компонент
    */
 
-  #renderStub = () => {
+  #setInterfaceState = () => {
     if (this.loading) {
       render(this.#loaderComponent, contentContainer);
+      this.#deactivateCtaButton();
       return;
     } else {
       remove(this.#loaderComponent);
+      this.#activateCtaButton();
     }
 
     if (this.error) {
       this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
       render(this.#alertComponent, contentContainer);
+      this.#deactivateCtaButton();
       return;
     }
 
@@ -193,6 +198,14 @@ export default class MainPresenter {
       this.#alertComponent = new AlertView({filterType: this.#filterType});
       render(this.#alertComponent, contentContainer);
     }
+  };
+
+  #activateCtaButton = () => {
+    this.#ctaButtonComponent.element.disabled = false;
+  };
+
+  #deactivateCtaButton = () => {
+    this.#ctaButtonComponent.element.disabled = true;
   };
 
   /**
@@ -274,12 +287,12 @@ export default class MainPresenter {
   };
 
   #handleNewPointFormClose = () => {
-    this.#renderStub();
-    this.#buttonComponent.element.disabled = false;
+    this.#setInterfaceState();
+    this.#activateCtaButton();
   };
 
-  #handleNewPointButtonClick = () => {
+  #handleCtaButtonClick = () => {
     this.#createNewPoint();
-    this.#buttonComponent.element.disabled = true;
+    this.#deactivateCtaButton();
   };
 }

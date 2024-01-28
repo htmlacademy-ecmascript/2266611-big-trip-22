@@ -1,8 +1,8 @@
 import AbstractView from '../../framework/view/abstract-view.js';
 
-const createButtonTemplate = () => '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>';
+const createCtaButtonTemplate = () => '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>';
 
-export default class ButtonView extends AbstractView {
+export default class CtaButtonView extends AbstractView {
   #handleClick = null;
 
   constructor({onClick}) {
@@ -12,7 +12,7 @@ export default class ButtonView extends AbstractView {
   }
 
   get template() {
-    return createButtonTemplate();
+    return createCtaButtonTemplate();
   }
 
   #clickHandler = (evt) => {
