@@ -25,7 +25,7 @@ const createPointTemplate = (point, offers, destinations) => {
   const selectedOffers = defaultOffers.filter((defaultOffer) => point.offers.includes(defaultOffer.id));
   const destination = destinations.find((item) => item.id === point.destination);
 
-  const startDate = convertDate(dateFrom, DateFormat.DATE);
+  const startDate = convertDate(dateFrom, DateFormat.MONTH_DAY);
   const startTime = convertDate(dateFrom, DateFormat.TIME);
   const endTime = convertDate(dateTo, DateFormat.TIME);
   const duration = convertDuration(calculateDuration(dateFrom, dateTo));

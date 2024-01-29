@@ -1,8 +1,15 @@
+import {getMinDate, getMaxDate} from '../../utils/date.js';
+
 import AbstractView from '../../framework/view/abstract-view.js';
 
 const getTitle = () => {};
 
-const getDates = () => {};
+const getDates = (points) => {
+  const startDates = points.map((point) => point.dateFrom);
+  const endDates = points.map((point) => point.dateTo);
+
+  return `${getMinDate(startDates)}&nbsp;&mdash;&nbsp;${getMaxDate(endDates)}`;
+};
 
 const calculateTotalCost = () => {};
 

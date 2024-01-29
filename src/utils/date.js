@@ -1,10 +1,13 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import minMax from 'dayjs/plugin/minMax';
 
 dayjs.extend(duration);
+dayjs.extend(minMax);
 
 const DateFormat = {
-  DATE: 'MMM D',
+  DAY_MONTH: 'D MMM',
+  MONTH_DAY: 'MMM D',
   TIME: 'HH:mm',
   EDIT_DATE: 'DD/MM/YY HH:mm',
   D_H_M_DURATION: 'DD[D] HH[H] mm[M]',
@@ -20,13 +23,17 @@ const commonConfigOptions = {
   dateFormat: DateFormat.DATE_PICKED
 };
 
+const convertDate = (date, format) => date ? dayjs(date).format(format) : '';
+
+const getMinDate = (items) => convertDate(dayjs.min(items.map((item) => dayjs(item))), DateFormat.DAY_MONTH);
+
+const getMaxDate = (items) => convertDate(dayjs.max(items.map((item) => dayjs(item))), DateFormat.DAY_MONTH);
+
 const isDateFuture = (start) => dayjs().isBefore(start);
 
 const isDatePresent = (start, end) => dayjs().isAfter(start) && dayjs().isBefore(end);
 
 const isDatePast = (end) => dayjs().isAfter(end);
-
-const convertDate = (date, format) => date ? dayjs(date).format(format) : '';
 
 const calculateDuration = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(start)));
 
@@ -52,12 +59,14 @@ const sortByDuration = (start, end) => (a, b) => {
 };
 
 export {
-  isDateFuture,
-  isDatePresent,
-  isDatePast,
   DateFormat,
   commonConfigOptions,
   convertDate,
+  getMinDate,
+  getMaxDate,
+  isDateFuture,
+  isDatePresent,
+  isDatePast,
   calculateDuration,
   convertDuration,
   sortByDate,
