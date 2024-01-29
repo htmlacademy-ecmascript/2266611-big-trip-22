@@ -1,5 +1,6 @@
-import AbstractView from '../../framework/view/abstract-view.js';
 import {FilterMessage} from '../../utils/const.js';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createAlertTemplate = (errorMessage, filterType) => {
   const filterMessage = FilterMessage[filterType];

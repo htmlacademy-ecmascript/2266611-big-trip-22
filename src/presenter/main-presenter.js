@@ -1,9 +1,10 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {sortByValue} from '../utils/utils.js';
 import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/const.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
+
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 import CtaButtonView from '../view/toolbar/cta-button-view.js';
 import SortView from '../view/toolbar/sort-view.js';

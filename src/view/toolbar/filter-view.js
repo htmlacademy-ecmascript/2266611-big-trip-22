@@ -1,6 +1,6 @@
-import AbstractView from '../../framework/view/abstract-view.js';
-
 import {upFirstLetter} from '../../utils/utils.js';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createFilterTemplate = (filter, currentFilterType) => {
   const {type, count} = filter;

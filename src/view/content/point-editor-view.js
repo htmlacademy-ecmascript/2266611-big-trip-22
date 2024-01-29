@@ -1,5 +1,3 @@
-import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
-
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, commonConfigOptions, convertDate} from '../../utils/date.js';
 import {upFirstLetter} from '../../utils/utils.js';
@@ -7,6 +5,8 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/material_blue.css';
+
+import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
 const createPointTypeGroupTemplate = (pointId, type) => (/*html*/`
   ${POINT_TYPES.map((pointType) => (

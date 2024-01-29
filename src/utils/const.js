@@ -30,8 +30,8 @@ const DEFAULT_POINT_TYPE = 'flight';
 const DEFAULT_POINT = {
   id: 0,
   basePrice: 0,
-  dateFrom: new Date().toISOString(),
-  dateTo: new Date().toISOString(),
+  dateFrom: '',
+  dateTo: '',
   destination: 0,
   isFavorite: false,
   offers: [],
@@ -69,7 +69,7 @@ const FilterType = {
 };
 
 const FilterMessage = {
-  [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no past events now'

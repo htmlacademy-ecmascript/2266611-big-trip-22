@@ -17,10 +17,11 @@ const DateFormat = {
 };
 
 const commonConfigOptions = {
-  disableMobile: 'true',
   enableTime: true,
   'time_24hr': true,
-  dateFormat: DateFormat.DATE_PICKED
+  allowInput: true,
+  dateFormat: DateFormat.DATE_PICKED,
+  disableMobile: 'true'
 };
 
 const convertDate = (date, format) => date ? dayjs(date).format(format) : '';
