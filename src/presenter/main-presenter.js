@@ -225,7 +225,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.addPoint(updateType, point);
         } catch(err) {
-          this.#pointPresenters.setAborting();
+          this.#newPointPresenter.setAborting();
         }
         break;
       case UserAction.DELETE_POINT:
