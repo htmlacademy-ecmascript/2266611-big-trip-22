@@ -11,6 +11,8 @@ const FAILED_LOAD = 'Failed to load latest route information';
 
 const Authorization = 'Basic ca986cd8b872960';
 
+const MAX_DISPLAYED_DESTINATIONS = 3;
+
 const POINT_TYPES = [
   'taxi',
   'bus',
@@ -101,6 +103,7 @@ export {
   END_POINT,
   FAILED_LOAD,
   Authorization,
+  MAX_DISPLAYED_DESTINATIONS,
   POINT_TYPES,
   DEFAULT_POINT,
   SortType,

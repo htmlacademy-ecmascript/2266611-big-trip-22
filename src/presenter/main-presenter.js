@@ -68,7 +68,7 @@ export default class MainPresenter {
       case SortType.PRICE.name:
         return filteredPoints.sort(sortByValue('basePrice'));
     }
-    return filteredPoints.sort(sortByDate('dateFrom'));
+    return filteredPoints;
   }
 
   get offers() {

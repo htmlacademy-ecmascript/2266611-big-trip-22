@@ -1,12 +1,14 @@
 import {getMinDate, getMaxDate} from '../../utils/date.js';
+import {MAX_DISPLAYED_DESTINATIONS} from '../../utils/const.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
 const getTitle = (points, destinations) => {
-  const destinationNames = points.map((point) => destinations.find((destination) => point.destination === destination.id))
+  const destinationNames = points.map((point) => destinations
+    .find((destination) => point.destination === destination.id))
     .map((destination) => destination.name);
 
-  if (destinationNames.length > 3) {
+  if (destinationNames.length > MAX_DISPLAYED_DESTINATIONS) {
     return `${destinationNames.at(0)} &mdash;...&mdash; ${destinationNames.at(-1)}`;
   }
 
