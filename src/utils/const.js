@@ -1,5 +1,3 @@
-import {generateTokenId} from './token.js';
-
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
@@ -11,7 +9,7 @@ const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const FAILED_LOAD = 'Failed to load latest route information';
 
-const Authorization = generateTokenId();
+const Authorization = 'Basic ca986cd8b872960';
 
 const POINT_TYPES = [
   'taxi',

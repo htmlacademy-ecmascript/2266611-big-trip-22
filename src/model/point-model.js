@@ -60,7 +60,7 @@ export default class PointModel extends Observable {
   async updatePoint(updateType, point) {
     const updatedPoint = await this.#pointsApiService.updatePoint(point);
     this.#points = updateItem(this.#points, updatedPoint);
-    this._notify(updateType, updatedPoint.id);
+    this._notify(updateType, updatedPoint);
   }
 
   async addPoint(updateType, point) {

@@ -31,19 +31,19 @@ const calculateOffersPrice = (points, offers) => {
 
 const calculateBasePrice = (points) => points.map((point) => point.basePrice).reduce((sum, current) => sum + current, 0);
 
-function createHeadlineTemplate(points, offers, destinations) {
-  return `<section class="trip-main__trip-info  trip-info">
-            <div class="trip-info__main">
-              <h1 class="trip-info__title">${getTitle(points, destinations)}</h1>
-              <p class="trip-info__dates">${getDates(points)}</p>
-            </div>
-            <p class="trip-info__cost">
-              Total: &euro;&nbsp;<span class="trip-info__cost-value">
-                ${calculateBasePrice(points) + calculateOffersPrice(points, offers)}
-              </span>
-            </p>
-          </section>`;
-}
+const createHeadlineTemplate = (points, offers, destinations) => (/*html*/
+  `<section class="trip-main__trip-info  trip-info">
+    <div class="trip-info__main">
+      <h1 class="trip-info__title">${getTitle(points, destinations)}</h1>
+      <p class="trip-info__dates">${getDates(points)}</p>
+    </div>
+    <p class="trip-info__cost">
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">
+      ${calculateBasePrice(points) + calculateOffersPrice(points, offers)}
+    </span>
+    </p>
+  </section>`
+);
 
 export default class HeadlineView extends AbstractView {
   #points = [];
