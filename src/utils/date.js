@@ -19,7 +19,6 @@ const DateFormat = {
 const commonConfigOptions = {
   enableTime: true,
   'time_24hr': true,
-  allowInput: true,
   dateFormat: DateFormat.DATE_PICKED,
   disableMobile: 'true'
 };
