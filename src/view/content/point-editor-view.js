@@ -165,8 +165,8 @@ const createPointEditorTemplate = (point, offers, destinations) => {
                   </div>
 
                   <!-- Кнопки -->
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${setButtonValue()}</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset">${setButtonValue()}</button>
                   ${createRollupButtonTemplate(point.id)}
                 </header>
 

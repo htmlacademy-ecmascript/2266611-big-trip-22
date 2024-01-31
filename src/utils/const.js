@@ -1,15 +1,8 @@
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE'
-};
-
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const FAILED_LOAD = 'Failed to load latest route information';
 
-const Authorization = 'Basic ca986cd8b872960';
+const AUTHORIZATION = 'Basic ca986cd8b872960';
 
 const MAX_DISPLAYED_DESTINATIONS = 3;
 
@@ -36,6 +29,13 @@ const DEFAULT_POINT = {
   isFavorite: false,
   offers: [],
   type: DEFAULT_POINT_TYPE
+};
+
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 const SortType = {
@@ -95,17 +95,17 @@ const UpdateType = {
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
+  UPPER_LIMIT: 1000
 };
 
 export {
-  Method,
   END_POINT,
   FAILED_LOAD,
-  Authorization,
+  AUTHORIZATION,
   MAX_DISPLAYED_DESTINATIONS,
   POINT_TYPES,
   DEFAULT_POINT,
+  Method,
   SortType,
   FilterType,
   FilterMessage,

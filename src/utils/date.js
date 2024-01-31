@@ -5,6 +5,12 @@ import minMax from 'dayjs/plugin/minMax';
 dayjs.extend(duration);
 dayjs.extend(minMax);
 
+const Millisecond = {
+  HOUR: 3600000,
+  DAY: 86400000,
+  YEAR: 31536000000
+};
+
 const DateFormat = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM D',
@@ -37,17 +43,23 @@ const isDatePast = (end) => dayjs().isAfter(end);
 
 const calculateDuration = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(start)));
 
-const convertDuration = (value) => {
-  if (value.get('day')) {
-    return value.format(DateFormat.D_H_M_DURATION);
-  }
+function convertDuration (start, end) {
+  const value = dayjs(end).diff(dayjs(start));
 
-  if (!value.get('day') && value.get('hour')) {
-    return value.format(DateFormat.H_M_DURATION);
-  }
+  switch (true) {
+    case value < Millisecond.HOUR:
+      return dayjs.duration(value).format(DateFormat.M_DURATION);
 
-  return value.format(DateFormat.M_DURATION);
-};
+    case value >= Millisecond.HOUR && value < Millisecond.DAY:
+      return dayjs.duration(value).format(DateFormat.H_M_DURATION);
+
+    case value >= Millisecond.DAY && value < Millisecond.YEAR:
+      return dayjs.duration(value).format(DateFormat.D_H_M_DURATION);
+
+    case value >= Millisecond.YEAR:
+      return `${Math.floor(dayjs.duration(value).asDays())}D ${dayjs.duration(value).format(DateFormat.H_M_DURATION)}`;
+  }
+}
 
 const sortByDate = (start) => (a, b) => dayjs(a[start]).diff(dayjs(b[start]));
 
@@ -67,7 +79,6 @@ export {
   isDateFuture,
   isDatePresent,
   isDatePast,
-  calculateDuration,
   convertDuration,
   sortByDate,
   sortByDuration
