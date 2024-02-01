@@ -1,5 +1,5 @@
-import {SortType} from '../../utils/const.js';
-import {upFirstLetter} from '../../utils/utils.js';
+import {SortType} from '../../utils/enum.js';
+import {capitalizeFirstLetter} from '../../utils/utils.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
@@ -10,7 +10,7 @@ const createSortTypeTemplate = (name, isDisabled, currentSortType) => (/*html*/`
     data-sort-type="${name}"
     ${isDisabled ? 'disabled' : ''}
     ${currentSortType.name === name ? 'checked' : ''}>
-    <label class="trip-sort__btn" for="sort-${name}">${upFirstLetter(name)}</label>
+    <label class="trip-sort__btn" for="sort-${name}">${capitalizeFirstLetter(name)}</label>
   </div>`
 );
 

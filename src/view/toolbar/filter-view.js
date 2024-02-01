@@ -1,4 +1,4 @@
-import {upFirstLetter} from '../../utils/utils.js';
+import {capitalizeFirstLetter} from '../../utils/utils.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
@@ -8,7 +8,7 @@ const createFilterTemplate = (filter, currentFilterType) => {
   return `<div class="trip-filters__filter">
             <input id="filter-${type}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${type}"
             ${type === currentFilterType ? 'checked' : ''} ${count === 0 ? 'disabled' : ''} value="${type}">
-            <label class="trip-filters__filter-label" for="filter-${type}">${upFirstLetter(type)}</label>
+            <label class="trip-filters__filter-label" for="filter-${type}">${capitalizeFirstLetter(type)}</label>
           </div>`;
 };
 

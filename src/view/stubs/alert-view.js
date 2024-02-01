@@ -1,4 +1,4 @@
-import {FilterMessage} from '../../utils/const.js';
+import {FilterMessage} from '../../utils/enum.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 

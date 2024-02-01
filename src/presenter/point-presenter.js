@@ -1,5 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
-import {Mode, UserAction, UpdateType} from '../utils/const.js';
+import {Mode, UserAction, UpdateType} from '../utils/enum.js';
 
 import PointView from '../view/content/point-view.js';
 import PointEditorView from '../view/content/point-editor-view.js';
@@ -46,7 +46,7 @@ export default class PointPresenter {
       destinations: this.#destinations,
       onEditClick: this.#handleCloseClick,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
+      onFormReset: this.#handleFormReset
     });
 
     if (prevPointComponent === null || prevPointEditorComponent === null) {
@@ -152,7 +152,7 @@ export default class PointPresenter {
     );
   };
 
-  #handleDeleteClick = (point) => {
+  #handleFormReset = (point) => {
     this.#handleDataChange(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,

@@ -1,6 +1,6 @@
 import {render, replace, remove} from '../framework/render.js';
 import {filter} from '../utils/filter.js';
-import {FilterType, UpdateType} from '../utils/const.js';
+import {FilterType, UpdateType} from '../utils/enum.js';
 
 import FilterView from '../view/toolbar/filter-view.js';
 

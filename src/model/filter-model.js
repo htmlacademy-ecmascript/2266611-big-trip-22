@@ -1,4 +1,4 @@
-import {FilterType} from '../utils/const.js';
+import {FilterType} from '../utils/enum.js';
 
 import Observable from '../framework/observable.js';
 

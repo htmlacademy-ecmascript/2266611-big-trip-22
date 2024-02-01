@@ -1,6 +1,7 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
 import {sortByValue} from '../utils/utils.js';
-import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/const.js';
+import {FAILED_LOAD} from '../utils/const.js';
+import {SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/enum.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
 
@@ -94,7 +95,7 @@ export default class MainPresenter {
   }
 
   #renderCtaButton = () => {
-    this.#ctaButtonComponent = new CtaButtonView({onClick: this.#handleCtaButtonClick});
+    this.#ctaButtonComponent = new CtaButtonView({onCtaButtonClick: this.#handleCtaButtonClick});
     render(this.#ctaButtonComponent, toolbarContainer);
   };
 

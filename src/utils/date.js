@@ -41,7 +41,7 @@ const isDatePast = (end) => dayjs().isAfter(end);
 
 const calculateDuration = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(start)));
 
-function convertDuration (start, end) {
+const convertDuration = (start, end) => {
   const value = dayjs(end).diff(dayjs(start));
   const days = Math.floor(dayjs.duration(value).asDays());
   const hours = dayjs.duration(value).format(DateFormat.H_M_DURATION);
@@ -55,7 +55,7 @@ function convertDuration (start, end) {
     case value >= Millisecond.DAY:
       return days < 10 ? `0${days}D ${hours}` : `${days}D ${hours}`;
   }
-}
+};
 
 const sortByDate = (start) => (first, second) => dayjs(first[start]).diff(dayjs(second[start]));
 
