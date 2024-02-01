@@ -9,7 +9,7 @@ export default class PointPresenter {
   #pointComponent = null;
   #pointEditorComponent = null;
 
-  #point = [];
+  #point = null;
   #offers = [];
   #destinations = [];
 

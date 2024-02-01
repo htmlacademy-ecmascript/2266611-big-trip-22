@@ -7,8 +7,7 @@ dayjs.extend(minMax);
 
 const Millisecond = {
   HOUR: 3600000,
-  DAY: 86400000,
-  YEAR: 31536000000
+  DAY: 86400000
 };
 
 const DateFormat = {
@@ -16,7 +15,6 @@ const DateFormat = {
   MONTH_DAY: 'MMM D',
   TIME: 'HH:mm',
   EDIT_DATE: 'DD/MM/YY HH:mm',
-  D_H_M_DURATION: 'DD[D] HH[H] mm[M]',
   H_M_DURATION: 'HH[H] mm[M]',
   M_DURATION: 'mm[M]',
   DATE_PICKED: 'd/m/y H:i'
@@ -45,27 +43,25 @@ const calculateDuration = (start, end) => dayjs.duration(dayjs(end).diff(dayjs(s
 
 function convertDuration (start, end) {
   const value = dayjs(end).diff(dayjs(start));
+  const days = Math.floor(dayjs.duration(value).asDays());
+  const hours = dayjs.duration(value).format(DateFormat.H_M_DURATION);
+  const minutes = dayjs.duration(value).format(DateFormat.M_DURATION);
 
   switch (true) {
     case value < Millisecond.HOUR:
-      return dayjs.duration(value).format(DateFormat.M_DURATION);
-
+      return minutes;
     case value >= Millisecond.HOUR && value < Millisecond.DAY:
-      return dayjs.duration(value).format(DateFormat.H_M_DURATION);
-
-    case value >= Millisecond.DAY && value < Millisecond.YEAR:
-      return dayjs.duration(value).format(DateFormat.D_H_M_DURATION);
-
-    case value >= Millisecond.YEAR:
-      return `${Math.floor(dayjs.duration(value).asDays())}D ${dayjs.duration(value).format(DateFormat.H_M_DURATION)}`;
+      return hours;
+    case value >= Millisecond.DAY:
+      return days < 10 ? `0${days}D ${hours}` : `${days}D ${hours}`;
   }
 }
 
-const sortByDate = (start) => (a, b) => dayjs(a[start]).diff(dayjs(b[start]));
+const sortByDate = (start) => (first, second) => dayjs(first[start]).diff(dayjs(second[start]));
 
-const sortByDuration = (start, end) => (a, b) => {
-  const firstDuration = calculateDuration(a[start], a[end]);
-  const secondDuration = calculateDuration(b[start], b[end]);
+const sortByDuration = (start, end) => (first, second) => {
+  const firstDuration = calculateDuration(first[start], first[end]);
+  const secondDuration = calculateDuration(second[start], second[end]);
 
   return secondDuration.asMilliseconds() - firstDuration.asMilliseconds();
 };

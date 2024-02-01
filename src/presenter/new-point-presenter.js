@@ -11,7 +11,7 @@ export default class NewPointPresenter {
   #handleDestroy = null;
 
   #pointModel = null;
-  #point = [];
+  #point = null;
 
   constructor({listComponent, pointModel, onDataChange, onDestroy}) {
     this.#listComponent = listComponent;
