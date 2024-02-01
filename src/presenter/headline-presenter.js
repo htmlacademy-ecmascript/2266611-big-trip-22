@@ -2,14 +2,14 @@ import {RenderPosition, render, remove} from '../framework/render.js';
 
 import HeadlineView from '../view/content/headline-view.js';
 
-const toolbarContainer = document.querySelector('.trip-main');
-
 export default class HeadlinePresenter {
-  #headlineComponent = null;
   #pointModel = null;
+  #headlineComponent = null;
+  #toolbarContainer = null;
 
-  constructor({pointModel}) {
+  constructor({pointModel, toolbarContainer}) {
     this.#pointModel = pointModel;
+    this.#toolbarContainer = toolbarContainer;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
   }
@@ -30,7 +30,7 @@ export default class HeadlinePresenter {
       return;
     }
 
-    render(this.#headlineComponent, toolbarContainer, RenderPosition.AFTERBEGIN);
+    render(this.#headlineComponent, this.#toolbarContainer, RenderPosition.AFTERBEGIN);
   }
 
   #handleModelEvent = () => {

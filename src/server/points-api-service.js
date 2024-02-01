@@ -1,5 +1,6 @@
+import {Method} from '../utils/enum.js';
+
 import ApiService from '../framework/api-service.js';
-import {Method} from '../utils/const.js';
 
 export default class PointsApiService extends ApiService {
   async getPoints() {

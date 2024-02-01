@@ -1,20 +1,19 @@
 import {render, replace, remove} from '../framework/render.js';
 import {filter} from '../utils/filter.js';
-import {FilterType, UpdateType} from '../utils/const.js';
+import {FilterType, UpdateType} from '../utils/enum.js';
 
 import FilterView from '../view/toolbar/filter-view.js';
-
-const filterContainer = document.querySelector('.trip-controls__filters');
 
 export default class FilterPresenter {
   #pointModel = null;
   #filterModel = null;
-
   #filterComponent = null;
+  #filterContainer = null;
 
-  constructor({pointModel, filterModel}) {
+  constructor({pointModel, filterModel, filterContainer}) {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+    this.#filterContainer = filterContainer;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -35,7 +34,7 @@ export default class FilterPresenter {
     this.#filterComponent = new FilterView({filters, currentFilterType, onFilterTypeChange});
 
     if (prevFilterComponent === null) {
-      render(this.#filterComponent, filterContainer);
+      render(this.#filterComponent, this.#filterContainer);
       return;
     }
 

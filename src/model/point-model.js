@@ -1,7 +1,7 @@
-import Observable from '../framework/observable.js';
-
 import {updateItem} from '../utils/utils.js';
-import {UpdateType} from '../utils/const.js';
+import {UpdateType} from '../utils/enum.js';
+
+import Observable from '../framework/observable.js';
 
 export default class PointModel extends Observable {
   #pointsApiService = null;
@@ -16,25 +16,6 @@ export default class PointModel extends Observable {
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
-  }
-
-  async init() {
-    try {
-      this.#points = await this.#pointsApiService.getPoints();
-      this.#offers = await this.#pointsApiService.getOffers();
-      this.#destinations = await this.#pointsApiService.getDestinations();
-
-      this.#isLoading = false;
-    } catch {
-      this.#points = [];
-      this.#offers = [];
-      this.#destinations = [];
-
-      this.#isLoading = false;
-      this.#isLoadingFailed = true;
-    }
-
-    this._notify(UpdateType.INIT);
   }
 
   get points() {
@@ -57,10 +38,29 @@ export default class PointModel extends Observable {
     return this.#isLoadingFailed;
   }
 
+  async init() {
+    try {
+      this.#points = await this.#pointsApiService.getPoints();
+      this.#offers = await this.#pointsApiService.getOffers();
+      this.#destinations = await this.#pointsApiService.getDestinations();
+
+      this.#isLoading = false;
+    } catch {
+      this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
+
+      this.#isLoading = false;
+      this.#isLoadingFailed = true;
+    }
+
+    this._notify(UpdateType.INIT);
+  }
+
   async updatePoint(updateType, point) {
     const updatedPoint = await this.#pointsApiService.updatePoint(point);
     this.#points = updateItem(this.#points, updatedPoint);
-    this._notify(updateType, updatedPoint.id);
+    this._notify(updateType, updatedPoint);
   }
 
   async addPoint(updateType, point) {

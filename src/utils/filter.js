@@ -1,4 +1,4 @@
-import {FilterType} from './const.js';
+import {FilterType} from './enum.js';
 import {isDateFuture, isDatePresent, isDatePast} from './date.js';
 
 const filter = {

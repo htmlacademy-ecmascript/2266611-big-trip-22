@@ -1,7 +1,7 @@
-import AbstractView from '../../framework/view/abstract-view.js';
-
-import {DateFormat, convertDate, calculateDuration, convertDuration} from '../../utils/date.js';
+import {DateFormat, convertDate, convertDuration} from '../../utils/date.js';
 import he from 'he';
+
+import AbstractView from '../../framework/view/abstract-view.js';
 
 const createSelectedOffersTemplate = (selectedOffers) => {
   if (selectedOffers.length === 0) {
@@ -25,10 +25,10 @@ const createPointTemplate = (point, offers, destinations) => {
   const selectedOffers = defaultOffers.filter((defaultOffer) => point.offers.includes(defaultOffer.id));
   const destination = destinations.find((item) => item.id === point.destination);
 
-  const startDate = convertDate(dateFrom, DateFormat.DATE);
+  const startDate = convertDate(dateFrom, DateFormat.MONTH_DAY);
   const startTime = convertDate(dateFrom, DateFormat.TIME);
   const endTime = convertDate(dateTo, DateFormat.TIME);
-  const duration = convertDuration(calculateDuration(dateFrom, dateTo));
+  const duration = convertDuration(dateFrom, dateTo);
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
@@ -78,7 +78,7 @@ const createPointTemplate = (point, offers, destinations) => {
 };
 
 export default class PointView extends AbstractView {
-  #point = [];
+  #point = null;
   #offers = [];
   #destinations = [];
 

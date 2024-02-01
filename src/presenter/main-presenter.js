@@ -1,9 +1,11 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {sortByValue} from '../utils/utils.js';
-import {FAILED_LOAD, SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/const.js';
+import {FAILED_LOAD} from '../utils/const.js';
+import {SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/enum.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
+
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 import CtaButtonView from '../view/toolbar/cta-button-view.js';
 import SortView from '../view/toolbar/sort-view.js';
@@ -13,9 +15,6 @@ import LoaderView from '../view/stubs/loader-view.js';
 
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-
-const toolbarContainer = document.querySelector('.trip-main');
-const contentContainer = document.querySelector('.trip-events');
 
 export default class MainPresenter {
   #pointModel = null;
@@ -30,6 +29,9 @@ export default class MainPresenter {
   #loaderComponent = new LoaderView();
   #listComponent = new ListView();
 
+  #toolbarContainer = null;
+  #contentContainer = null;
+
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
@@ -39,9 +41,12 @@ export default class MainPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({pointModel, filterModel}) {
+  constructor({pointModel, filterModel, toolbarContainer, contentContainer}) {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+
+    this.#toolbarContainer = toolbarContainer;
+    this.#contentContainer = contentContainer;
 
     this.#newPointPresenter = new NewPointPresenter({
       listComponent: this.#listComponent.element,
@@ -93,8 +98,8 @@ export default class MainPresenter {
   }
 
   #renderCtaButton = () => {
-    this.#ctaButtonComponent = new CtaButtonView({onClick: this.#handleCtaButtonClick});
-    render(this.#ctaButtonComponent, toolbarContainer);
+    this.#ctaButtonComponent = new CtaButtonView({onCtaButtonClick: this.#handleCtaButtonClick});
+    render(this.#ctaButtonComponent, this.#toolbarContainer);
   };
 
   #renderContent = () => {
@@ -116,7 +121,7 @@ export default class MainPresenter {
   };
 
   #renderPointsContainer = () => {
-    render(this.#listComponent, contentContainer);
+    render(this.#listComponent, this.#contentContainer);
   };
 
   #renderPoints = () => {
@@ -159,7 +164,7 @@ export default class MainPresenter {
     const onSortTypeChange = this.#handleSortTypeChange;
 
     this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
-    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
+    render(this.#sortComponent, this.#contentContainer, RenderPosition.AFTERBEGIN);
   };
 
   /**
@@ -171,7 +176,7 @@ export default class MainPresenter {
 
   #setInterfaceState = () => {
     if (this.loading) {
-      render(this.#loaderComponent, contentContainer);
+      render(this.#loaderComponent, this.#contentContainer);
       this.#deactivateCtaButton();
       return;
     } else {
@@ -181,14 +186,14 @@ export default class MainPresenter {
 
     if (this.error) {
       this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
-      render(this.#alertComponent, contentContainer);
+      render(this.#alertComponent, this.#contentContainer);
       this.#deactivateCtaButton();
       return;
     }
 
     if (this.points.length === 0) {
       this.#alertComponent = new AlertView({filterType: this.#filterType});
-      render(this.#alertComponent, contentContainer);
+      render(this.#alertComponent, this.#contentContainer);
     }
   };
 
@@ -224,7 +229,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.addPoint(updateType, point);
         } catch(err) {
-          this.#pointPresenters.setAborting();
+          this.#newPointPresenter.setAborting();
         }
         break;
       case UserAction.DELETE_POINT:

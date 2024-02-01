@@ -1,5 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import {DEFAULT_POINT, UserAction, UpdateType} from '../utils/const.js';
+import {DEFAULT_POINT} from '../utils/const.js';
+import {UserAction, UpdateType} from '../utils/enum.js';
 
 import PointEditorView from '../view/content/point-editor-view.js';
 
@@ -11,7 +12,7 @@ export default class NewPointPresenter {
   #handleDestroy = null;
 
   #pointModel = null;
-  #point = [];
+  #point = null;
 
   constructor({listComponent, pointModel, onDataChange, onDestroy}) {
     this.#listComponent = listComponent;
@@ -30,9 +31,8 @@ export default class NewPointPresenter {
       point: this.#point,
       offers: this.#pointModel.offers,
       destinations: this.#pointModel.destinations,
-      onEditClick: this.#handleCloseClick,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleCancelClick
+      onFormReset: this.#handleFormReset
     });
 
     render(this.#pointEditorComponent, this.#listComponent, RenderPosition.AFTERBEGIN);
@@ -80,11 +80,7 @@ export default class NewPointPresenter {
     );
   };
 
-  #handleCancelClick = () => {
-    this.destroy();
-  };
-
-  #handleCloseClick = () => {
+  #handleFormReset = () => {
     this.destroy();
   };
 
