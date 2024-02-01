@@ -16,9 +16,6 @@ import LoaderView from '../view/stubs/loader-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 
-const toolbarContainer = document.querySelector('.trip-main');
-const contentContainer = document.querySelector('.trip-events');
-
 export default class MainPresenter {
   #pointModel = null;
   #filterModel = null;
@@ -32,6 +29,9 @@ export default class MainPresenter {
   #loaderComponent = new LoaderView();
   #listComponent = new ListView();
 
+  #toolbarContainer = null;
+  #contentContainer = null;
+
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
   #filterType = FilterType.EVERYTHING;
@@ -41,9 +41,12 @@ export default class MainPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({pointModel, filterModel}) {
+  constructor({pointModel, filterModel, toolbarContainer, contentContainer}) {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+
+    this.#toolbarContainer = toolbarContainer;
+    this.#contentContainer = contentContainer;
 
     this.#newPointPresenter = new NewPointPresenter({
       listComponent: this.#listComponent.element,
@@ -69,7 +72,7 @@ export default class MainPresenter {
       case SortType.PRICE.name:
         return filteredPoints.sort(sortByValue('basePrice'));
     }
-    return filteredPoints;
+    return filteredPoints.sort(sortByDate('dateFrom'));
   }
 
   get offers() {
@@ -96,7 +99,7 @@ export default class MainPresenter {
 
   #renderCtaButton = () => {
     this.#ctaButtonComponent = new CtaButtonView({onCtaButtonClick: this.#handleCtaButtonClick});
-    render(this.#ctaButtonComponent, toolbarContainer);
+    render(this.#ctaButtonComponent, this.#toolbarContainer);
   };
 
   #renderContent = () => {
@@ -118,7 +121,7 @@ export default class MainPresenter {
   };
 
   #renderPointsContainer = () => {
-    render(this.#listComponent, contentContainer);
+    render(this.#listComponent, this.#contentContainer);
   };
 
   #renderPoints = () => {
@@ -161,7 +164,7 @@ export default class MainPresenter {
     const onSortTypeChange = this.#handleSortTypeChange;
 
     this.#sortComponent = new SortView({currentSortType, onSortTypeChange});
-    render(this.#sortComponent, contentContainer, RenderPosition.AFTERBEGIN);
+    render(this.#sortComponent, this.#contentContainer, RenderPosition.AFTERBEGIN);
   };
 
   /**
@@ -173,7 +176,7 @@ export default class MainPresenter {
 
   #setInterfaceState = () => {
     if (this.loading) {
-      render(this.#loaderComponent, contentContainer);
+      render(this.#loaderComponent, this.#contentContainer);
       this.#deactivateCtaButton();
       return;
     } else {
@@ -183,14 +186,14 @@ export default class MainPresenter {
 
     if (this.error) {
       this.#alertComponent = new AlertView({errorMessage: FAILED_LOAD});
-      render(this.#alertComponent, contentContainer);
+      render(this.#alertComponent, this.#contentContainer);
       this.#deactivateCtaButton();
       return;
     }
 
     if (this.points.length === 0) {
       this.#alertComponent = new AlertView({filterType: this.#filterType});
-      render(this.#alertComponent, contentContainer);
+      render(this.#alertComponent, this.#contentContainer);
     }
   };
 

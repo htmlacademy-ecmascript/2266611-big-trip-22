@@ -1,10 +1,11 @@
-import {getMinDate, getMaxDate} from '../../utils/date.js';
+import {getMinDate, getMaxDate, sortByDate} from '../../utils/date.js';
 import {MAX_DISPLAYED_DESTINATIONS} from '../../utils/const.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
 const getTitle = (points, destinations) => {
-  const destinationNames = points.map((point) => destinations
+  const sortedPoints = points.sort(sortByDate('dateFrom'));
+  const destinationNames = sortedPoints.map((point) => destinations
     .find((destination) => point.destination === destination.id))
     .map((destination) => destination.name);
 

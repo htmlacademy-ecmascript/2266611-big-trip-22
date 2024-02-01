@@ -1,6 +1,5 @@
 import {updateItem} from '../utils/utils.js';
 import {UpdateType} from '../utils/enum.js';
-import {sortByDate} from '../utils/date.js';
 
 import Observable from '../framework/observable.js';
 
@@ -20,7 +19,7 @@ export default class PointModel extends Observable {
   }
 
   get points() {
-    return this.#points.sort(sortByDate('dateFrom'));
+    return this.#points;
   }
 
   get offers() {
