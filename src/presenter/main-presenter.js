@@ -146,7 +146,7 @@ export default class MainPresenter {
   };
 
   #createNewPoint = () => {
-    this.#currentSortType = SortType.DAY;
+    this.#currentSortType = this.#defaultSortType;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
@@ -273,7 +273,7 @@ export default class MainPresenter {
   };
 
   #handleSortTypeChange = (sortType) => {
-    this.#currentSortType = sortType;
+    this.#currentSortType = {name: sortType, disabled: false};
     this.#clearPoints();
     this.#renderPoints();
   };
