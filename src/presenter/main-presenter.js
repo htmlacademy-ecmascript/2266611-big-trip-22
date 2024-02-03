@@ -64,7 +64,7 @@ export default class MainPresenter {
     const points = this.#pointModel.points;
     const filteredPoints = filter[this.#filterType](points);
 
-    switch (this.#currentSortType) {
+    switch (this.#currentSortType.name) {
       case SortType.DAY.name:
         return filteredPoints.sort(sortByDate('dateFrom'));
       case SortType.TIME.name:
