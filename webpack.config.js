@@ -9,6 +9,10 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     clean: true,
   },
+  devServer: {
+    contentBase: path.join(__dirname, `public`),
+    watchContentBase: true,
+  },
   devtool: 'source-map',
   plugins: [
     new HtmlPlugin({
