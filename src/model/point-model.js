@@ -1,4 +1,4 @@
-import {updateItem} from '../utils/utils.js';
+import {updateItem} from '../utils/common.js';
 import {UpdateType} from '../utils/enum.js';
 
 import Observable from '../framework/observable.js';

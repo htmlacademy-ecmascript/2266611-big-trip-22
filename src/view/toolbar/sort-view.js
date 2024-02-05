@@ -1,5 +1,5 @@
 import {SortType} from '../../utils/enum.js';
-import {capitalizeFirstLetter} from '../../utils/utils.js';
+import {capitalizeFirstLetter} from '../../utils/common.js';
 
 import AbstractView from '../../framework/view/abstract-view.js';
 
