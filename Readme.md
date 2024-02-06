@@ -4,19 +4,19 @@ A travel planner app helps to plan in detail the route of the trip, calculate th
 
 <p align="center"><img width="869" alt="Browser Mockup." src="/preview/big-trip-preview.png"></p>
 
-### Functionality description
+## Overview
 
-The journey is based on individual route points. A route point is a separate event in the journey. The route point can be a stop at some place (Check-in, Sightseeing, Restaurant) or a trip by vehicle (Taxi, Bus, Train, Ship, Drive and Flight). 
+The journey is based on individual route points. A route point is a separate event in the journey. The route point can be a stop at some place (**Check-in**, **Sightseeing**, **Restaurant**) or a trip by vehicle (**Taxi**, **Bus**, **Train**, **Ship**, **Drive** and **Flight**). 
 
-The "Favorite" button (displayed as an asterisk) adds a route point to favorites.
+The 'Favorite' button (displayed as an asterisk) adds a route point to favorites.
 
 <p align="center"><img width="869" alt="Browser Mockup." src="/preview/point-editor-preview.png"></p>
 
-The time and date are selected using the library flatpickr.js.
+The 'New Event' button is used to create a new route point.
 
 <p align="center"><img width="869" alt="Browser Mockup." src="/preview/flatpickr-preview.png"></p>
 
-The 'New Event' button is used to create a new route point.
+The time and date are selected using the library flatpickr.js.
 
 Additional options are displayed in the offers block. The set of additional options that the user can select when creating a route point depends on the type of route point. The choice of additional options affects the total cost of the trip. 
 
@@ -24,9 +24,9 @@ The total cost of the trip is recalculated when creating/changing/deleting any p
 
 <p align="center"><img width="869" alt="Browser Mockup." src="/preview/toolbar-preview.png"></p>
 
-There are several filters provided in the application: Everything — a complete list of route points, Future — a list of planned route points, Present — a list of current route points, Past — a list of passed route points.
+There are several filters provided in the application: **Everything** is a complete list of route points, **Future** is a list of planned route points, **Present** is a list of current route points, **Past** is a list of passed route points.
 
-The user can sort the route points by the cost (click on the column heading "Price") and duration (click on the column heading "Time"). To cancel the sorting and return to the original date sorting, the user clicks on the column heading "Day".
+The user can sort the route points by the cost (click on the column heading **Price**) and duration (click on the column heading **Time**). To cancel the sorting and return to the original date sorting, the user clicks on the column heading **Day**.
 
 ### Technologies
 
