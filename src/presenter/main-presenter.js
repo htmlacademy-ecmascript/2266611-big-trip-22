@@ -1,5 +1,5 @@
 import {RenderPosition, render, remove} from '../framework/render.js';
-import {sortByValue} from '../utils/utils.js';
+import {sortByValue} from '../utils/common.js';
 import {FAILED_LOAD} from '../utils/const.js';
 import {SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../utils/enum.js';
 import {sortByDate, sortByDuration} from '../utils/date.js';

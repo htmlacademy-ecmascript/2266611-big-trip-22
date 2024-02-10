@@ -1,6 +1,6 @@
 import {POINT_TYPES} from '../../utils/const.js';
 import {DateFormat, commonConfigOptions, convertDate} from '../../utils/date.js';
-import {capitalizeFirstLetter} from '../../utils/utils.js';
+import {capitalizeFirstLetter} from '../../utils/common.js';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';

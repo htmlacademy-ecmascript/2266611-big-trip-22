@@ -1,52 +1,77 @@
-# Проект «Большое путешествие»
+# Big Trip
 
-* Студент: [Ольга Межецкая](https://up.htmlacademy.ru/ecmascript/22/user/2266611).
-* Наставник: [Олег Глущенко](https://htmlacademy.ru/profile/id305355).
+A travel planner app helps to plan in detail the route of the trip, calculate the cost of the trip and get information about the sights.
 
----
+<p align="center"><img width="869" alt="Browser Mockup." src="/preview/big-trip-preview.png"></p>
 
-_Не удаляйте и не изменяйте папки и файлы:_
-_`.editorconfig`, `.gitattributes`._
+## Overview
 
----
+The journey is based on individual route points. A route point is a separate event in the journey. The route point can be a stop at some place (**Check-in**, **Sightseeing**, **Restaurant**) or a trip by vehicle (**Taxi**, **Bus**, **Train**, **Ship**, **Drive** and **Flight**). 
 
-### Памятка
+The 'Favorite' button (displayed as an asterisk) adds a route point to favorites.
 
-#### 1. Зарегистрируйтесь на Гитхабе
+<p align="center"><img width="869" alt="Browser Mockup." src="/preview/point-editor-preview.png"></p>
 
-Если у вас ещё нет аккаунта на [github.com](https://github.com/join), скорее зарегистрируйтесь.
+The 'New Event' button is used to create a new route point.
 
-#### 2. Создайте форк
+<p align="center"><img width="869" alt="Browser Mockup." src="/preview/flatpickr-preview.png"></p>
 
-Откройте репозиторий и нажмите кнопку «Fork» в правом верхнем углу. Репозиторий из Академии будет скопирован в ваш аккаунт.
+The time and date are selected using the library flatpickr.js.
 
-<img width="769" alt="Press 'Fork'" src="https://cloud.githubusercontent.com/assets/259739/20264045/a1ddbf40-aa7a-11e6-9a1a-724a1c0123c8.png">
+Additional options are displayed in the offers block. The set of additional options that the user can select when creating a route point depends on the type of route point. The choice of additional options affects the total cost of the trip. 
 
-Получится вот так:
+The total cost of the trip is recalculated when creating/changing/deleting any point on the route.
 
-<img width="769" alt="Forked" src="https://cloud.githubusercontent.com/assets/259739/20264122/f63219a6-aa7a-11e6-945a-89818fc7c014.png">
+<p align="center"><img width="869" alt="Browser Mockup." src="/preview/toolbar-preview.png"></p>
 
-#### 3. Клонируйте репозиторий на свой компьютер
+There are several filters provided in the application: **Everything** is a complete list of route points, **Future** is a list of planned route points, **Present** is a list of current route points, **Past** is a list of passed route points.
 
-Будьте внимательны: нужно клонировать свой репозиторий (форк), а не репозиторий Академии. Также обратите внимание, что клонировать репозиторий нужно через SSH, а не через HTTPS. Нажмите зелёную кнопку в правой части экрана, чтобы скопировать SSH-адрес вашего репозитория:
+The user can sort the route points by the cost (click on the column heading **Price**) and duration (click on the column heading **Time**). To cancel the sorting and return to the original date sorting, the user clicks on the column heading **Day**.
 
-<img width="769" alt="SSH" src="https://cloud.githubusercontent.com/assets/259739/20264180/42704126-aa7b-11e6-9ab4-73372b812a53.png">
+### Technologies
 
-Клонировать репозиторий можно так:
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
 
-```
-git clone SSH-адрес_вашего_форка
-```
 
-Команда клонирует репозиторий на ваш компьютер и подготовит всё необходимое для старта работы.
+### Directory structure
 
-#### 4. Начинайте обучение!
-
----
-
-<a href="https://htmlacademy.ru/intensive/ecmascript"><img align="left" width="50" height="50" title="HTML Academy" src="https://up.htmlacademy.ru/static/img/intensive/ecmascript/logo-for-github.svg"></a>
-
-Репозиторий создан для обучения на профессиональном курсе «[JavaScript. Архитектура клиентских приложений](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
-
-[check-image]: https://github.com/htmlacademy-ecmascript/2266611-big-trip-22/workflows/Project%20check/badge.svg?branch=master
-[check-url]: https://github.com/htmlacademy-ecmascript/2266611-big-trip-22/actions
+    ├── src
+    │   ├── model                      
+    │   │   ├── filter-model.js          
+    │   │   └── point-model.js                
+    │   ├── presenter                                     
+    │   │   ├── filter-presenter.js                
+    │   │   ├── headline-presenter.js                   
+    │   │   ├── main-presenter.js  
+    │   │   ├── new-point-presenter.js                 
+    │   │   └── point-presenter.js 
+    │   ├── view                     
+    │   │   ├── content
+    │   │   │   ├── headline-view.js   
+    │   │   │   ├── list-view.js  
+    │   │   │   ├── point-editor-view.js
+    │   │   │   └── point-view.js   
+    │   │   ├── stubs
+    │   │   │   ├── alert-view.js
+    │   │   │   └── loader-view.js                
+    │   │   └── toolbar                 
+    │   │       ├── cta-button-view.js
+    │   │       ├── filter-view.js
+    │   │       └── sort-view.js
+    │   ├── server                               
+    │   │   └── points-api-service.js          
+    │   ├── utils
+    │   │   ├── common.js
+    │   │   ├── const.js
+    │   │   ├── date.js
+    │   │   ├── enum.js
+    │   │   └── filter.js
+    │   └── main.js
+    └── public
+        ├── css
+        ├── fonts
+        ├── img
+        └── index.html
